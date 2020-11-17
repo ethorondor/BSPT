@@ -1,3 +1,5 @@
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
 ## <div align="center">Monitoring Structural Breaks with Bayesian Sequential Probability Test</div>
 ### <div align="center">Haixi Li</div>
 
