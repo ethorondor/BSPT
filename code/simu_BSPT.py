@@ -9,7 +9,7 @@ import multiprocessing as mp
 import matplotlib.pyplot as plt
 from matplotlib import pyplot
 import os
-os.chdir("/home/thorondor/Dropbox/Research/MntStrBrk/code")
+os.chdir("/mnt/File/Documents/BSPT/code")
 #%%
 
 pd.options.display.float_format = '{:.2f}'.format
