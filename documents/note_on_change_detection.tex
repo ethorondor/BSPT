@@ -1,0 +1,74 @@
+\documentclass[a4paper]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{amsmath,amsthm,geometry,graphics,amssymb,csquotes,hyperref,float,amsfonts,natbib}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem*{remark}{Remark}
+\renewcommand\qedsymbol{$\blacksquare$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Note on Asymptotic Theory}
+\author{Haixi Li}
+\date{\today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+\section{Set Theory}
+General guideline for math notations:
+\begin{itemize}
+    \item use lower case Greek letter for parameters, $\beta ,\alpha $
+    \item use capital letters for random variables, $X$,$Y$, sometime for matrix
+    \item use lower case letter for realization of random variables, $x$,$y$, or individual observation.
+    \item use $\mathbb{R}$ denote space and $\mathcal{F}$ to denote $\sigma$-algebra on the space.
+\end{itemize}
+\section{Measure}
+A measure is a set function, a mapping which associates a real number with a set.
+\cite{Davidson1994}
+\section{Expectation}
+\begin{corollary}
+Let $g:\mathbb{R}\mapsto \mathbb{R}$ be a function with that property that $x\geq a$ implies $g(x)\geq g(a)>0$, for a given constant $a$. Then 
+\[
+P(X\geq a) \leq \frac{E(g(X))}{g(a)}.
+\]
+\end{corollary}
+\begin{proof}
+\begin{eqnarray*}
+g(a)P(X\geq a) &=& g(a)\int_{x\geq a} dF(x)\\
+               &\leq& \int_{x\geq a}g(x)dF(x) \\
+               &\leq& E(g(X).
+\end{eqnarray*}
+\end{proof}
+\section*{Appendix}
+\begin{table}[H]
+	\footnotesize
+	\centering
+	\begin{tabular}{c l}
+		\hline
+		\hline
+		Notations             & Description \\
+		\hline
+		$\nu$	& structural breaking time \\
+		$\tau$	& stopping time\\
+		$\Omega$& sample space\\
+		$\omega \in \Omega$& a point in the sample space\\
+		$\mathbb{R}$ & real number space\\
+		$\mathbb{Q}$ & rational number space\\
+		$(\Omega,\mathcal{F},\mu)$ & measurable space\\
+		\hline
+		\hline
+	\end{tabular}
+	\protect\caption{\label{notations}Table of Notations}
+	\end{table}
+\bibliographystyle{elsarticle-harv}
+\bibliography{/mnt/MyFiles/Documents/library.bib}
+\end{document}
