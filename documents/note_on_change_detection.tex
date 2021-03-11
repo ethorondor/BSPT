@@ -1,6 +1,5 @@
 \documentclass[a4paper]{article}
 \usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsmath,amsthm,geometry,graphics,amssymb,csquotes,hyperref,float,amsfonts,natbib}
 \geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
@@ -15,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Note on Asymptotic Theory}
+\title{Note on Change Detection}
 \author{Haixi Li}
 \date{\today}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,6 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
+\cite{Shiryaev1963_Optimum_Method,Shiryaev1978} solve the change detection problem with i.i.d in Bayesian setup. But he didn't show the asymptotic property of his proposal.
 Notation in the paper follows \cite{Tartakovsky2005}.
 \section{Problem formulation}
 The observed sequence of random variables $X_{1},X_{2},...$ are i.i.d., untile a change occurs, the observations are again i.i.d., but with another distribution.

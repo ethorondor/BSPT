@@ -4,44 +4,44 @@ The top-level auxiliary file: note_on_change_detection.aux
 The style file: elsarticle-harv.bst
 Database file #1: /home/ethorondor/Documents/Mendeley/library.bib
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 2 entries,
+You've used 4 entries,
             2990 wiz_defined-function locations,
-            640 strings with 5475 characters,
-and the built_in function-call counts, 1129 in all, are:
-= -- 83
-> -- 28
-< -- 2
-+ -- 11
-- -- 9
-* -- 103
-:= -- 170
-add.period$ -- 6
-call.type$ -- 2
-change.case$ -- 12
-chr.to.int$ -- 2
-cite$ -- 2
-duplicate$ -- 88
-empty$ -- 96
-format.name$ -- 15
-if$ -- 208
+            653 strings with 5720 characters,
+and the built_in function-call counts, 2107 in all, are:
+= -- 157
+> -- 48
+< -- 4
++ -- 19
+- -- 15
+* -- 185
+:= -- 317
+add.period$ -- 12
+call.type$ -- 4
+change.case$ -- 23
+chr.to.int$ -- 4
+cite$ -- 4
+duplicate$ -- 172
+empty$ -- 188
+format.name$ -- 23
+if$ -- 397
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 16
-newline$ -- 25
-num.names$ -- 8
-pop$ -- 36
+missing$ -- 31
+newline$ -- 35
+num.names$ -- 16
+pop$ -- 69
 preamble$ -- 1
-purify$ -- 11
+purify$ -- 21
 quote$ -- 0
-skip$ -- 30
+skip$ -- 60
 stack$ -- 0
-substring$ -- 47
-swap$ -- 52
+substring$ -- 88
+swap$ -- 98
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 15
+type$ -- 30
 warning$ -- 0
-while$ -- 8
+while$ -- 16
 width$ -- 0
-write$ -- 41
+write$ -- 68
