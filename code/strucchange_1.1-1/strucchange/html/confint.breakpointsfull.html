@@ -1,0 +1,141 @@
+<html><head><title>R: Confidence Intervals for Breakpoints</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for confint.breakpointsfull {strucchange}"><tr><td>confint.breakpointsfull {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Confidence Intervals for Breakpoints</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Computes confidence intervals for breakpoints.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'breakpointsfull':
+confint(object, parm = NULL, level = 0.95,
+    breaks = NULL, het.reg = TRUE, het.err = TRUE, ...)
+## S3 method for class 'confint.breakpoints':
+lines(x, col = 2, angle = 90, length = 0.05,
+    code = 3, at = NULL, breakpoints = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+an object of class <code>"breakpointsfull"</code> as computed by
+<code><a href="breakpoints.html">breakpoints</a></code> from a <code>formula</code>.</td></tr>
+<tr valign="top"><td><code>parm</code></td>
+<td>
+the same as <code>breaks</code>, only one of the two should be
+specified.</td></tr>
+<tr valign="top"><td><code>level</code></td>
+<td>
+the confidence level required.</td></tr>
+<tr valign="top"><td><code>breaks</code></td>
+<td>
+an integer specifying the number of breaks to be used.
+By default the breaks of the minimum BIC partition are used.</td></tr>
+<tr valign="top"><td><code>het.reg</code></td>
+<td>
+logical. Should heterogenous regressors be assumed? If set
+to <code>FALSE</code> the distribution of the regressors is assumed to be
+homogenous over the segments.</td></tr>
+<tr valign="top"><td><code>het.err</code></td>
+<td>
+logical. Should heterogenous errors be assumed? If set
+to <code>FALSE</code> the distribution of the errors is assumed to be
+homogenous over the segments.</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+an object of class <code>"confint.breakpoints"</code> as returned by
+<code>confint</code>.</td></tr>
+<tr valign="top"><td><code>col, angle, length, code</code></td>
+<td>
+arguments passed to <code><a href="../../base/html/arrows.html">arrows</a></code>.</td></tr>
+<tr valign="top"><td><code>at</code></td>
+<td>
+position on the y axis, where the confidence arrows should be
+drawn. By default they are drawn at the bottom of the plot.</td></tr>
+<tr valign="top"><td><code>breakpoints</code></td>
+<td>
+logical. If <code>TRUE</code> vertical lines for the breakpoints
+are drawn.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<EM>currently not used</EM>.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+As the breakpoints are integers (observation numbers) the corresponding
+confidence intervals are also rounded to integers.
+</p>
+<p>
+The distribution function used for the computation of confidence
+intervals of breakpoints is given in Bai (1997). The procedure, in
+particular the usage of heterogenous regressors and/or errors, is
+described in more detail in Bai &amp; Perron (2003).
+</p>
+<p>
+The breakpoints should be computed from a formula with <code>breakpoints</code>,
+then the confidence intervals for the breakpoints can be derived by
+<code>confint</code> and these can be visualized by <code>lines</code>. For an
+example see below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+A matrix containing the breakpoints and their lower and upper
+confidence boundary for the given level.</p>
+
+<h3>References</h3>
+
+<p>
+Bai J. (1997), Estimation of a Change Point in Multiple Regression Models,
+<EM>Review of Economics and Statistics</EM>, <B>79</B>, 551-563.
+</p>
+<p>
+Bai J., Perron P. (2003), Computation and Analysis of Multiple Structural Change
+Models, <EM>Journal of Applied Econometrics</EM>, <B>18</B>, 1-22.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="breakpoints.html">breakpoints</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+require(ts)
+
+## Nile data with one breakpoint: the annual flows drop in 1898
+## because the first Ashwan dam was built
+data(Nile)
+plot(Nile)
+
+## dating breaks
+bp.nile &lt;- breakpoints(Nile ~ 1)
+ci.nile &lt;- confint(bp.nile, breaks = 1)
+lines(ci.nile)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

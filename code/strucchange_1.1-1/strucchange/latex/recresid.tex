@@ -1,0 +1,54 @@
+\Header{recresid}{Recursive Residuals}
+\methalias{recresid.default}{recresid}
+\methalias{recresid.formula}{recresid}
+\methalias{recresid.lm}{recresid}
+\keyword{regression}{recresid}
+\begin{Description}\relax
+A generic function for computing the recursive residuals
+(standardized one step prediction errors) of a linear regression model.\end{Description}
+\begin{Usage}
+\begin{verbatim}
+## Default S3 method:
+recresid(x, y, ...)
+## S3 method for class 'formula':
+recresid(formula, data = list(), ...)
+## S3 method for class 'lm':
+recresid(x, data = list(), ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x, y, formula}] specification of the linear regression model:
+either by a regressor matrix \code{x} and a response variable \code{y},
+or by a \code{formula} or by a fitted object \code{x} of class \code{"lm"}.
+\item[\code{data}] an optional data frame containing the variables in the model. By
+default the variables are taken from the environment which \code{recresid} is
+called from. Specifying \code{data} might also be necessary when applying
+\code{recresid} to a fitted model of class \code{"lm"} if this does not
+contain the regressor matrix and the response.
+\item[\code{...}] \emph{currently not used.}
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Under the usual assumptions for the linear regression model the
+recdursive residuals are (asymptotically) normal and
+i.i.d. (see Brown, Durbin, Evans (1975) for details).\end{Details}
+\begin{Value}
+A vector containing the recursive residuals.\end{Value}
+\begin{References}\relax
+Brown R.L., Durbin J., Evans J.M. (1975), Techniques for
+testing constancy of regression relationships over time, \emph{Journal of the
+Royal Statistal Society}, B, \bold{37}, 149-163.\end{References}
+\begin{SeeAlso}\relax
+\code{\Link{efp}}\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+x <- rnorm(100)
+x[51:100] <- x[51:100] + 2
+rr <- recresid(x ~ 1)
+plot(cumsum(rr), type = "l")
+
+plot(efp(x ~ 1, type = "Rec-CUSUM"))
+\end{ExampleCode}
+\end{Examples}
+

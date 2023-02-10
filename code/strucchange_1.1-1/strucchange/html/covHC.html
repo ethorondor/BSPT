@@ -1,0 +1,97 @@
+<html><head><title>R: Heteroskedasticity-Consistent Covariance Matrix Estimation</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for covHC {strucchange}"><tr><td>covHC {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Heteroskedasticity-Consistent Covariance Matrix Estimation</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Heteroskedasticity-consistent estimation of the covariance matrix of the
+coefficient estimates in a linear regression model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+covHC(formula, type = c("HC2", "const", "HC", "HC1", "HC3"),
+   data=list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+a symbolic description for the model to be fitted.</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+a character string specifying the estimation type. For
+details see below.</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+an optional data frame containing the variables in the model.
+By default the variables are taken from the environment which <code>covHC</code>
+is called from.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+When <code>type = "const"</code> constant variances are assumed and
+and <code>covHC</code> gives the usual estimate of the covariance matrix of
+the coefficient estimates:
+</p>
+<p align="center"><i>sigma^2 (X'X)^{-1}</i></p>
+<p>
+All other methods do not assume constant variances and are suitable in case of
+heteroskedasticity. <code>"HC"</code> gives White's estimator; for details see the
+references.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+A matrix containing the covariance matrix estimate.</p>
+
+<h3>References</h3>
+
+<p>
+MacKinnon J. G., White H. (1985),
+Some heteroskedasticity-consistent
+covariance matrix estimators with improved finite sample properties.
+<EM>Journal of Econometrics</EM> <B>29</B>, 305-325
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="../../base/html/lm.html">lm</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## generate linear regression relationship
+## with homoskedastic variances
+x &lt;- sin(1:100)
+y &lt;- 1 + x + rnorm(100)
+## compute usual covariance matrix of coefficient estimates
+covHC(y~x, type="const")
+
+sigma2 &lt;- sum(residuals(lm(y~x))^2)/98
+sigma2 * solve.crossprod(cbind(1,x))
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

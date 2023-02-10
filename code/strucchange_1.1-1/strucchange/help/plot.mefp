@@ -1,0 +1,45 @@
+plot.mefp            package:strucchange            R Documentation
+
+_P_l_o_t _M_e_t_h_o_d_s _f_o_r _m_e_f_p _O_b_j_e_c_t_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     This is a method of the generic 'plot' function for for '"mefp"'
+     objects as returned by 'mefp' or 'monitor'. It plots the emprical
+     fluctuation process (or a functional therof) as a time series
+     plot, and includes boundaries corresponding to the significance
+     level of the monitoring procedure.
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'mefp':
+     plot(x, boundary = TRUE, functional = "max", main = NULL,
+         ylab = "empirical fluctuation process", ylim = NULL, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       x: an object of class '"mefp"'.
+
+boundary: if 'FALSE', plotting of boundaries is suppressed.
+
+functional: indicates which functional should be applied to a
+          multivariate empirical process. If set to 'NULL' all
+          dimensions of the process (one process per coefficient in the
+          linear model) are plotted. 
+
+main, ylab, ylim, ...: high-level 'plot' function parameters.
+
+_S_e_e _A_l_s_o:
+
+     'mefp'
+
+_E_x_a_m_p_l_e_s:
+
+     df1 <- data.frame(y=rnorm(300))
+     df1[150:300,"y"] <- df1[150:300,"y"]+1
+     me1 <- mefp(y~1, data=df1[1:50,,drop=FALSE], type="ME", h=1,
+                   alpha=0.05)
+     me2 <- monitor(me1, data=df1)
+
+     plot(me2)
+

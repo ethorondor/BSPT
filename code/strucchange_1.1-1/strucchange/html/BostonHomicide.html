@@ -1,0 +1,85 @@
+<html><head><title>R: Youth Homicides in Boston</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for BostonHomicide {strucchange}"><tr><td>BostonHomicide {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Youth Homicides in Boston</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Data about the number of youth homicides in Boston during the
+`Boston Gun Project'&mdash;a policing initiative aiming at lowering
+homicide victimization among young people in Boston.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(BostonHomicide)</pre>
+
+
+<h3>Format</h3>
+
+<p>
+A data frame containing 2 monthly time series
+and a factor coding seasonality.
+<dl>
+<dt>homicides</dt><dd>time series. Number of youth homicides,</dd>
+<dt>population</dt><dd>time series. Boston population (aged 25-44),
+linearly interpolated from annual data.</dd>
+<dt>season</dt><dd>factor coding the month.</dd>
+</dl>
+
+<h3>Details</h3>
+
+<p>
+The `Boston Gun Project' is a policing initiative aiming at lowering
+youth homicides in Boston. The project began in early 1995 and implemented the
+so-called `Operation Ceasefire' intervention which began in the late spring of 1996.
+</p>
+<p>
+More information is available at:
+</p>
+<p>
+<a href="http://www.ksg.harvard.edu/criminaljustice/research/bgp.htm">http://www.ksg.harvard.edu/criminaljustice/research/bgp.htm</a>
+</p>
+
+
+<h3>Source</h3>
+
+<p>
+Cooper et al. (2001), Figure 1 and Table I.
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Cooper S.J., Piehl A.M., Braga A.A., Kennedy D.M. (2001), Testing for Structural
+Breaks in the Evaluation of Programs, Unpublished Paper, John F. Kennedy School
+of Government.
+</p>
+<p>
+Kennedy D.M., Piehl A.M., Braga A.A. (1996), Youth Violence in Boston: Gun Markets,
+Serious Youth Offenders, and a Use-Reduction Strategy, <EM>Law and Contemporary Problems</EM>,
+<B>59</B>, 147-183.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(BostonHomicide)
+
+fm &lt;- glm(homicides ~ population + season, data = BostonHomicide,
+          family = poisson)
+anova(fm, test = "F")
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

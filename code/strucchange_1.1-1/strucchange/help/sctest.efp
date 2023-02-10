@@ -1,0 +1,104 @@
+sctest.efp            package:strucchange            R Documentation
+
+_G_e_n_e_r_a_l_i_z_e_d _F_l_u_c_t_u_a_t_i_o_n _T_e_s_t_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Performs a generalized fluctuation test.
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'efp':
+     sctest(x, alt.boundary = FALSE,
+         functional = c("max", "range", "maxL2", "meanL2"), ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       x: an object of class '"efp"'.
+
+alt.boundary: logical. If set to 'TRUE' alternative boundaries (instead
+          of the standard linear boundaries) will be used (for CUSUM
+          processes only).
+
+functional: indicates which functional should be applied to the
+          empirical fluctuation process.
+
+     ...: currently not used.
+
+_D_e_t_a_i_l_s:
+
+     The critical values for the MOSUM tests and the ME test are just
+     tabulated for confidence levels between 0.1 and 0.01, thus the p
+     value approximations will be poor for other p values. Similarly
+     the critical values for the maximum and mean squared Euclidian
+     norm ('"maxL2"' and '"meanL2"') are tabulated for confidence
+     levels between 0.2 and 0.005.
+
+_V_a_l_u_e:
+
+     an object of class '"htest"' containing: 
+
+statistic: the test statistic
+
+ p.value: the corresponding p value
+
+  method: a character string with the method used
+
+data.name: a character string with the data name
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Brown R.L., Durbin J., Evans J.M. (1975), Techniques for testing
+     constancy of regression relationships over time, _Journal of the
+     Royal Statistal Society_, B, *37*, 149-163.
+
+     Chu C.-S., Hornik K., Kuan C.-M. (1995), MOSUM tests for parameter
+     constancy, _Biometrika_, *82*, 603-617.
+
+     Chu C.-S., Hornik K., Kuan C.-M. (1995), The moving-estimates test
+     for parameter stability, _Econometric Theory_, *11*, 669-720.
+
+     Krämer W., Ploberger W., Alt R. (1988), Testing for structural
+     change in dynamic models, _Econometrica_, *56*, 1355-1369.
+
+     Kuan C.-M., Hornik K. (1995), The generalized fluctuation test: A
+     unifying view, _Econometric Reviews_, *14*, 135 - 161.
+
+     Kuan C.-M., Chen (1994), Implementing the fluctuation and moving
+     estimates tests in dynamic econometric models, _Economics
+     Letters_, *44*, 235-239.
+
+     Ploberger W., Krämer W. (1992), The CUSUM Test with OLS Residuals,
+     _Econometrica_, *60*, 271-285.
+
+     Zeileis A. (2000), p Values and Alternative Boundaries for CUSUM
+     Tests, Working Paper 78, SFB "Adaptive Information Systems and
+     Modelling in Economics and Management Science", Vienna University
+     of Economics, <URL: http://www.wu-wien.ac.at/am/wp00.htm#78>.
+
+_S_e_e _A_l_s_o:
+
+     'efp', 'plot.efp'
+
+_E_x_a_m_p_l_e_s:
+
+     ## Load dataset "nhtemp" with average yearly temperatures in New Haven
+     data(nhtemp)
+     ## plot the data
+     plot(nhtemp)
+
+     ## test the model null hypothesis that the average temperature remains
+     ## constant over the years compute OLS-CUSUM fluctuation process
+     temp.cus <- efp(nhtemp ~ 1, type = "OLS-CUSUM")
+     ## plot the process with alternative boundaries
+     plot(temp.cus, alpha = 0.01, alt.boundary = TRUE)
+     ## and calculate the test statistic
+     sctest(temp.cus)
+
+     ## compute moving estimates fluctuation process
+     temp.me <- efp(nhtemp ~ 1, type = "ME", h = 0.2)
+     ## plot the process with functional = "max"
+     plot(temp.me)
+     ## and perform the corresponding test
+     sctest(temp.me)
+

@@ -1,0 +1,97 @@
+sctest.formula          package:strucchange          R Documentation
+
+_S_t_r_u_c_t_u_r_a_l _C_h_a_n_g_e _T_e_s_t_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Performs tests for structural change.
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'formula':
+     sctest(formula, type = <<see below>>, h = 0.15,
+         alt.boundary = FALSE, functional = c("max", "range",
+         "maxL2", "meanL2"), from = 0.15, to = NULL, point = 0.5,
+         asymptotic = FALSE, data, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+ formula: a formula describing the model to be tested.
+
+    type: a character string specifying the structural change test that
+          ist to be performed. Besides the tests types described in
+          'efp' and 'sctest.Fstats'. The Chow test and the
+          Nyblom-Hansen test can be performed by setting type to
+          '"Chow"' or '"Nyblom-Hansen"', respectively.
+
+       h: numeric from interval (0,1) specifying the bandwidth.
+          Determins the size of the data window relative to sample size
+          (for MOSUM and ME tests only).
+
+alt.boundary: logical. If set to 'TRUE' alternative boundaries (instead
+          of the standard linear boundaries) will be used (for CUSUM
+          processes only).
+
+functional: indicates which functional should be used to aggregate the
+          empirical fluctuation processes to a test statistic.
+
+from, to: numerics. If 'from' is smaller than 1 they are interpreted as
+          percentages of data and by default 'to' is taken to be the 1
+          - 'from'. F statistics will be calculated for the
+          observations '(n*from):(n*to)', when 'n' is the number of
+          observations in the model. If 'from' is greater than 1 it is
+          interpreted to be the index and 'to' defaults to 'n - from'.
+          (for F tests only)
+
+   point: parameter of the Chow test for the potential change point.
+          Interpreted analogous to the 'from' parameter. By default
+          taken to be 'floor(n*0.5)' if 'n' is the  number of
+          observations in the model.
+
+asymptotic: logical. If 'TRUE' the asymptotic (chi-square) distribution
+          instead of the exact (F) distribution will be used to compute
+          the p value (for Chow test only).
+
+    data: an optional data frame containing the variables in the model.
+          By default the variables are taken from the environment which
+          'sctest' is called from.
+
+     ...: further arguments passed to 'efp' or 'Fstats'.
+
+_D_e_t_a_i_l_s:
+
+     'sctest.formula' is mainly a wrapper for 'sctest.efp' and
+     'sctest.Fstats' as it fits an empirical fluctuation process first
+     or computes the F statistics respectively and subsequently
+     performs the corresponding test. The Chow test and the
+     Nyblom-Hansen test are available explicitely here.
+
+_V_a_l_u_e:
+
+     an object of class '"htest"' containing: 
+
+statistic: the test statistic
+
+ p.value: the corresponding p value
+
+  method: a character string with the method used
+
+data.name: a character string with the data name
+
+_S_e_e _A_l_s_o:
+
+     'sctest.efp', 'sctest.Fstats'
+
+_E_x_a_m_p_l_e_s:
+
+     ## Load dataset "nhtemp" with average yearly temperatures in New Haven
+     data(nhtemp)
+     ## plot the data
+     plot(nhtemp)
+
+     ## test the model null hypothesis that the average temperature remains
+     ## constant over the years with the Standard CUSUM test
+     sctest(nhtemp ~ 1)
+     ## with the Chow test (under the alternative that there is a change 1941)
+     sctest(nhtemp ~ 1, type = "Chow", point = c(1941,1))
+

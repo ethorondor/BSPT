@@ -1,0 +1,89 @@
+## The S&P 500 stock prices can easily be obtained from http://finance.yahoo.com/
+## using the function get.hist.quote() from package tseries
+
+## load package
+library(tseries)
+
+## store the names of all 500 instruments from the SP 500
+"SP500Names" <-
+c("A", "CTAS", "JNS", "PTV", "AA", "CTB", "JNY", "PVN", "AAPL",
+"CTL", "JP", "PWER", "ABC", "CTX", "JPM", "PX", "ABI", "CTXS",
+"JWN", "Q", "ABK", "CUM", "K", "QCOM", "ABS", "CVG", "KBH", "QLGC",
+"ABT", "CVS", "KEY", "QTRN", "ACE", "CVX", "KG", "R", "ACV",
+"CZN", "KLAC", "RBK", "ADBE", "D", "KMB", "RDC", "ADCT", "DAL",
+"KMG", "RF", "ADI", "DCN", "KMI", "RHI", "ADM", "DD", "KO", "RIG",
+"ADP", "DDS", "KR", "RJR", "ADSK", "DE", "KRB", "RKY", "AEE",
+"DELL", "KRI", "ROH", "AEP", "DG", "KSE", "ROK", "AES", "DGX",
+"KSS", "RSH", "AET", "DHR", "LEG", "RTN", "AFL", "DIS", "LEH",
+"RX", "AGN", "DJ", "LIZ", "S", "AHC", "DLX", "LLTC", "SAFC",
+"AIG", "DNY", "LLY", "SANM", "AIV", "DOV", "LMT", "SBC", "ALL",
+"DOW", "LNC", "SBL", "ALTR", "DPH", "LOW", "SBUX", "AM", "DRI",
+"LPX", "SCH", "AMAT", "DTE", "LSI", "SDS", "AMCC", "DUK", "LTD",
+"SEBL", "AMD", "DVN", "LTR", "SEE", "AMGN", "DYN", "LU", "SFA",
+"AN", "EBAY", "LUV", "SGP", "ANDW", "EC", "LXK", "SHW", "AOC",
+"ECL", "MAR", "SIAL", "AOL", "ED", "MAS", "SLB", "APA", "EDS",
+"MAT", "SLE", "APC", "EFX", "MAY", "SLM", "APCC", "EIX", "MBI",
+"SLR", "APD", "EK", "MCD", "SNA", "APOL", "EMC", "MCK", "SNV",
+"ASD", "EMN", "MCO", "SO", "ASH", "EMR", "MDP", "SOTR", "ASO",
+"EOG", "MDT", "SPC", "AT", "EOP", "MEDI", "SPG", "ATH", "EP",
+"MEL", "SPLS", "ATI", "EQR", "MER", "SRE", "AV", "ERTS", "MERQ",
+"STI", "AVP", "ETN", "MET", "STJ", "AVY", "ETR", "MHP", "STT",
+"AW", "EXC", "MHS", "SUN", "AWE", "F", "MI", "SUNW", "AXP", "FBF",
+"MIL", "SVU", "AYE", "FCX", "MKC", "SWK", "AZO", "FD", "MMC",
+"SWY", "BA", "FDC", "MMM", "SYK", "BAC", "FDO", "MNST", "SYMC",
+"BAX", "FDX", "MO", "SYY", "BBBY", "FE", "MOLX", "T", "BBT",
+"FII", "MON", "TAPb", "BBY", "FISV", "MOT", "TE", "BC", "FITB",
+"MRK", "TEK", "BCC", "FLR", "MRO", "TER", "BCR", "FNM", "MSFT",
+"TGT", "BDK", "FO", "MTG", "THC", "BDX", "FON", "MU", "TIF",
+"BEN", "FPL", "MWD", "TIN", "BFb", "FRE", "MWV", "TJX", "BGEN",
+"FRX", "MXIM", "TLAB", "BHI", "FTN", "MYG", "TMK", "BJS", "G",
+"NAV", "TMO", "BK", "GAS", "NBR", "TNB", "BLI", "GCI", "NCC",
+"TOY", "BLL", "GD", "NCR", "TRB", "BLS", "GDT", "NE", "TROW",
+"BMC", "GDW", "NEM", "TSG", "BMET", "GE", "NFB", "TUP", "BMS",
+"GENZ", "NI", "TXN", "BMY", "GIS", "NKE", "TXT", "BNI", "GLK",
+"NOC", "TXU", "BOL", "GLW", "NOVL", "TYC", "BR", "GM", "NSC",
+"UCL", "BRCM", "GP", "NSM", "UIS", "BSC", "GPC", "NTAP", "UNH",
+"BSX", "GPS", "NTRS", "UNM", "BUD", "GR", "NUE", "UNP", "C",
+"GS", "NVDA", "UPC", "CA", "GT", "NVLS", "UPS", "CAG", "GTW",
+"NWL", "USB", "CAH", "GWW", "NXTL", "UST", "CAT", "HAL", "NYT",
+"UTX", "CB", "HAS", "ODP", "UVN", "CBE", "HBAN", "OMC", "VC",
+"CC", "HCA", "ONE", "VFC", "CCE", "HCR", "ORCL", "VIAb", "CCL",
+"HD", "OXY", "VMC", "CCU", "HDI", "PAYX", "VRTS", "CD", "HET",
+"PBG", "VZ", "CE", "HIG", "PBI", "WAG", "CEG", "HLT", "PCAR",
+"WAT", "CF", "HMA", "PCG", "WB", "CFC", "HNZ", "PCL", "WEN",
+"CHIR", "HON", "PCS", "WFC", "CI", "HOT", "PD", "WHR", "CIEN",
+"HPC", "PEG", "WIN", "CIN", "HPQ", "PEP", "WLP", "CINF", "HRB",
+"PFE", "WM", "CL", "HSY", "PFG", "WMB", "CLX", "HUM", "PG", "WMI",
+"CMA", "IBM", "PGL", "WMT", "CMCSA", "IFF", "PGN", "WOR", "CMS",
+"IGT", "PGR", "WPI", "CMVT", "INTC", "PH", "WWY", "CNP", "INTU",
+"PHM", "WY", "COF", "IP", "PKI", "WYE", "COL", "IPG", "PLD",
+"X", "COP", "IR", "PLL", "XEL", "COST", "ITT", "PMCS", "XL",
+"CPB", "ITW", "PMTC", "XLNX", "CPN", "JBL", "PNC", "XOM", "CPWR",
+"JCI", "PNW", "XRX", "CR", "JCP", "PPG", "YHOO", "CSC", "JDSU",
+"PPL", "YUM", "CSCO", "JHF", "PRU", "ZION", "CSX", "JNJ", "PSFT",
+"ZMH")
+
+## iteratively obtain all 500 instruments from http://finance.yahoo.com/
+SP500 <- NULL
+for(i in SP500Names) {
+  x <- try(get.hist.quote(instrument = i, quote = "Cl", start = "2001-07-31", end = "2001-12-31"))
+  if(class(x) == "try-error") x <- rep(NA, 154)
+  SP500 <- cbind(SP500, x)
+}
+
+## add the date to the data and store in data.frame
+colnames(SP500) <- SP500Names
+SP500 <- as.data.frame(as.matrix(SP500))
+mydays <- c(paste("0", 1:9, sep = ""), 10:31)
+SP500 <- cbind(c("2001-07-31",
+                 paste("2001-08-", mydays, sep = ""),
+                 paste("2001-09-", mydays[-31], sep = ""),
+                 paste("2001-10-", mydays, sep = ""),
+                 paste("2001-11-", mydays[-31], sep = ""),
+                 paste("2001-12-", mydays, sep = "")),
+               SP500)
+names(SP500) <- c("Day", SP500Names)
+
+## the object SP500 now contains the SP500 data
+## as stored in the file SP500.rda which was created by
+## save(SP500, file = "SP500.rda")

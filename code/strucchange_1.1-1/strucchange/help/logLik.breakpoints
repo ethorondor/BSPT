@@ -1,0 +1,75 @@
+logLik.breakpoints        package:strucchange        R Documentation
+
+_L_o_g _L_i_k_e_l_i_h_o_o_d _a_n_d _I_n_f_o_r_m_a_t_i_o_n _C_r_i_t_e_r_i_a _f_o_r _B_r_e_a_k_p_o_i_n_t_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Computation of log likelihood and AIC type information criteria
+     for partitions given by breakpoints.
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'breakpointsfull':
+     logLik(object, breaks = NULL, ...)
+     ## S3 method for class 'breakpointsfull':
+     AIC(object, breaks = NULL, ..., k = 2)
+
+_A_r_g_u_m_e_n_t_s:
+
+  object: an object of class '"breakpoints"' or '"breakpointsfull"'.
+
+  breaks: if 'object' is of class '"breakpointsfull"' the number of
+          breaks can be specified.
+
+     ...: _currently not used_.
+
+       k: the penalty parameter to be used, the default 'k = 2' is the
+          classical AIC, 'k = log(n)' gives the BIC, if 'n' is the
+          number of observations.
+
+_D_e_t_a_i_l_s:
+
+     As for linear models the log likelihood is computed on a normal
+     model and the degrees of freedom are the number of regression
+     coefficients multiplied by the number of segements plus the number
+     of estimated breakpoints plus 1 for the error variance.
+
+     If 'AIC' is applied to an object of class '"breakpointsfull"'
+     'breaks' can be a vector of integers and the AIC for each
+     corresponding partition will be returned. By default the maximal
+     number of breaks stored in the 'object' is used. See below for an
+     example.
+
+_V_a_l_u_e:
+
+     An object of class '"logLik"' or a simple vector containing the
+     AIC respectively.
+
+_S_e_e _A_l_s_o:
+
+     'breakpoints'
+
+_E_x_a_m_p_l_e_s:
+
+     require(ts)
+
+     ## Nile data with one breakpoint: the annual flows drop in 1898
+     ## because the first Ashwan dam was built
+     data(Nile)
+     plot(Nile)
+
+     bp.nile <- breakpoints(Nile ~ 1)
+     summary(bp.nile)
+     plot(bp.nile)
+
+     ## BIC of partitions with0 to 5 breakpoints
+     plot(0:5, AIC(bp.nile, k = log(bp.nile$nobs)), type = "b")
+     ## AIC
+     plot(0:5, AIC(bp.nile), type = "b")
+
+     ## BIC, AIC, log likelihood of a single partition
+     bp.nile1 <- breakpoints(bp.nile, breaks = 1)
+     AIC(bp.nile1, k = log(bp.nile1$nobs))
+     AIC(bp.nile1)
+     logLik(bp.nile1)
+

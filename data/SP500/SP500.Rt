@@ -1,0 +1,97 @@
+##################################################
+## R SESSION TRANSCRIPT : S&P 500 stock returns ##
+##################################################
+##
+## This R code reproduces the results for the S&P 500 stock returns data
+## as analyzed in Section 4.3 of
+## "Monitoring Structural Change in Dynamic Econometric Models"
+## by Achim Zeileis, Friedrich Leisch, Christian Kleiber and Kurt Hornik
+
+## load package strucchange
+library(strucchange)
+## currently strucchange does not support pretty plots for
+## irregular time series "out of the box". therefore, we need
+library(tseries)
+## and a "dirty hack" convenience function to plot empirical fluctuation processes
+## from irregular time series
+source("plot.irefp.R")
+
+## load data
+load("SP500.rda")
+## alternatively, the data can be read from
+## SP500.dat via read.table()
+## or via get.hist.quote() see file "getSP500.Rt"
+
+## omit NAs (non-trading days)
+nobs <- apply(SP500[,-1], 2, function(x) sum(!is.na(x)))
+sp500 <- SP500[, c(1, which(nobs == 103) + 1)]
+sp500 <- na.omit(sp500)
+
+## monitor ALL S&P 500 returns
+## convenience function to compute the breakpoints (detection points)
+## of OLS-based CUSUM and MOSUM test
+cusum <- function(name) {
+  ret <- diff(log(sp500[,name]))
+  y <- ret[1:28]
+  myborder <- function(k) 1.939*k/28
+  x.cusum <- mefp(y ~ 1, type = "OLS-CUSUM", border = myborder)
+  y <- ret
+  x.cusum <- monitor(x.cusum, verbose = FALSE)
+  return(x.cusum$breakpoint)
+}
+mosum <- function(name) {
+  ret <- diff(log(sp500[,name]))
+  y <- ret[1:28]
+  x.mosum <- mefp(y ~ 1, type = "OLS-MOSUM", h = 0.5, period = 4)
+  y <- ret
+  x.mosum <- monitor(x.mosum, verbose = FALSE)
+  return(x.mosum$breakpoint)
+}
+## compute breakpoints
+sp500.cusum <- sapply(names(sp500[-1]), cusum)
+sp500.mosum <- sapply(names(sp500[-1]), mosum)
+## number of breaks found
+sum(!is.na(sp500.cusum))
+sum(!is.na(sp500.mosum))
+## agreement of CUSUM and MOSUM on early breaks within the first two days
+sp500.cus.early <- names(sp500.cusum[which(!is.na(sp500.mosum) & sp500.mosum <= 30)])
+sp500.mos.early <- names(sp500.cusum[which(!is.na(sp500.cusum) & sp500.cusum <= 30)])
+sum(sp500.mos.early %in% sp500.cus.early)
+
+
+
+## monitor DELTA AIR LINES and LUCENT TECHNOLOGIES stock returns
+## extract the time series of stock prices and stock returns
+## for Delta Air Lines (DAL) and Lucent Technologies (LU)
+stock.prices <- irts(as.POSIXct(sp500$Day), as.matrix(sp500[, c("DAL", "LU")]))
+stock.returns <- irts(stock.prices$time[-1], diff(log(stock.prices$value)))
+
+## monitoring of DAL stock returns with OLS-based CUSUM and MOSUM test
+myborder <- function(k) 1.939*k/28
+x <- stock.returns[, "DAL"]$value[1:28]
+dal.cusum <- mefp(x ~ 1, type = "OLS-CUSUM", border = myborder)
+dal.mosum <- mefp(x ~ 1, type = "OLS-MOSUM", h = 0.5, period = 4)
+x <- stock.returns[, "DAL"]$value
+dal.cusum <- monitor(dal.cusum)
+dal.mosum <- monitor(dal.mosum)
+
+## monitoring of LU stock returns with OLS-based CUSUM and MOSUM test
+x <- stock.returns[, "LU"]$value[1:28]
+lu.cusum <- mefp(x ~ 1, type = "OLS-CUSUM", border = myborder)
+lu.mosum <- mefp(x ~ 1, type = "OLS-MOSUM", h = 0.5, period = 4)
+x <- stock.returns[, "LU"]$value
+lu.cusum <- monitor(lu.cusum)
+lu.mosum <- monitor(lu.mosum)
+
+## setup boundaries as irregular time series for pretty plotting
+cus.bound <- irts(stock.returns$time[-(1:27)], myborder(28:102))
+mos.bound <- as.vector(boundary(dal.mosum))
+mos.bound <- irts(stock.returns$time[-(1:27)], c(mos.bound[1], mos.bound))
+
+## Figure 11
+plot.irefp(lu.cusum, fun = NULL, type = "CUSUM")
+plot.irefp(lu.mosum, fun = NULL, type = "MOSUM")
+
+## Figure 12
+plot.irefp(dal.cusum, fun = NULL, type = "CUSUM")
+plot.irefp(dal.mosum, fun = NULL, type = "MOSUM")

@@ -1,0 +1,55 @@
+breakfactor           package:strucchange           R Documentation
+
+_F_a_c_t_o_r _C_o_d_i_n_g _o_f _S_e_g_m_e_n_t_a_t_i_o_n_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Generates a factor encoding the segmentation given by a set of
+     breakpoints.
+
+_U_s_a_g_e:
+
+     breakfactor(obj, breaks = NULL, labels = NULL, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+     obj: An object of class '"breakpoints"' or '"breakpointsfull"'
+          respectively.
+
+  breaks: an integer specifying the number of breaks to extract (only
+          if 'obj' is of class '"breakpointsfull"'), by default the
+          minimum BIC partition is used.
+
+  labels: a vector of labels for the returned factor, by default the
+          segments are numbered starting from '"segment1"'.
+
+     ...: further arguments passed to 'factor'.
+
+_V_a_l_u_e:
+
+     A factor encoding the segmentation.
+
+_S_e_e _A_l_s_o:
+
+     'breakpoints'
+
+_E_x_a_m_p_l_e_s:
+
+     require(ts)
+
+     ## Nile data with one breakpoint: the annual flows drop in 1898
+     ## because the first Ashwan dam was built
+     data(Nile)
+     plot(Nile)
+
+     ## compute breakpoints
+     bp.nile <- breakpoints(Nile ~ 1)
+
+     ## fit and visualize segmented and unsegmented model
+     fm0 <- lm(Nile ~ 1)
+     fm1 <- lm(Nile ~ breakfactor(bp.nile, breaks = 1))
+
+     lines(fitted(fm0), col = 3)
+     lines(fitted(fm1), col = 4)
+     lines(bp.nile, breaks = 1)
+

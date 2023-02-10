@@ -1,0 +1,63 @@
+recresid             package:strucchange             R Documentation
+
+_R_e_c_u_r_s_i_v_e _R_e_s_i_d_u_a_l_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     A generic function for computing the recursive residuals
+     (standardized one step prediction errors) of a linear regression
+     model.
+
+_U_s_a_g_e:
+
+     ## Default S3 method:
+     recresid(x, y, ...)
+     ## S3 method for class 'formula':
+     recresid(formula, data = list(), ...)
+     ## S3 method for class 'lm':
+     recresid(x, data = list(), ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+x, y, formula: specification of the linear regression model: either by
+          a regressor matrix 'x' and a response variable 'y', or by a
+          'formula' or by a fitted object 'x' of class '"lm"'.
+
+    data: an optional data frame containing the variables in the model.
+          By default the variables are taken from the environment which
+          'recresid' is called from. Specifying 'data' might also be
+          necessary when applying 'recresid' to a fitted model of class
+          '"lm"' if this does not contain the regressor matrix and the
+          response.
+
+     ...: _currently not used._
+
+_D_e_t_a_i_l_s:
+
+     Under the usual assumptions for the linear regression model the
+     recdursive residuals are (asymptotically) normal and i.i.d. (see
+     Brown, Durbin, Evans (1975) for details).
+
+_V_a_l_u_e:
+
+     A vector containing the recursive residuals.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Brown R.L., Durbin J., Evans J.M. (1975), Techniques for testing
+     constancy of regression relationships over time, _Journal of the
+     Royal Statistal Society_, B, *37*, 149-163.
+
+_S_e_e _A_l_s_o:
+
+     'efp'
+
+_E_x_a_m_p_l_e_s:
+
+     x <- rnorm(100)
+     x[51:100] <- x[51:100] + 2
+     rr <- recresid(x ~ 1)
+     plot(cumsum(rr), type = "l")
+
+     plot(efp(x ~ 1, type = "Rec-CUSUM"))
+

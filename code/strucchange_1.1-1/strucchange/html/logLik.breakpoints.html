@@ -1,0 +1,106 @@
+<html><head><title>R: Log Likelihood and Information Criteria for Breakpoints</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for logLik.breakpoints {strucchange}"><tr><td>logLik.breakpoints {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Log Likelihood and Information Criteria for Breakpoints</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Computation of log likelihood and AIC type information criteria
+for partitions given by breakpoints.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'breakpointsfull':
+logLik(object, breaks = NULL, ...)
+## S3 method for class 'breakpointsfull':
+AIC(object, breaks = NULL, ..., k = 2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+an object of class <code>"breakpoints"</code> or <code>"breakpointsfull"</code>.</td></tr>
+<tr valign="top"><td><code>breaks</code></td>
+<td>
+if <code>object</code> is of class <code>"breakpointsfull"</code> the
+number of breaks can be specified.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<EM>currently not used</EM>.</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+the penalty parameter to be used, the default <code>k = 2</code>
+is the classical AIC, <code>k = log(n)</code> gives the BIC, if <code>n</code>
+is the number of observations.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+As for linear models the log likelihood is computed on a normal model and
+the degrees of freedom are the number of regression coefficients multiplied
+by the number of segements plus the number of estimated breakpoints plus
+1 for the error variance.
+</p>
+<p>
+If <code>AIC</code> is applied to an object of class <code>"breakpointsfull"</code>
+<code>breaks</code> can be a vector of integers and the AIC for each corresponding
+partition will be returned. By default the maximal number of breaks stored
+in the <code>object</code> is used. See below for an example.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+An object of class <code>"logLik"</code> or a simple vector containing
+the AIC respectively.</p>
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="breakpoints.html">breakpoints</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+require(ts)
+
+## Nile data with one breakpoint: the annual flows drop in 1898
+## because the first Ashwan dam was built
+data(Nile)
+plot(Nile)
+
+bp.nile &lt;- breakpoints(Nile ~ 1)
+summary(bp.nile)
+plot(bp.nile)
+
+## BIC of partitions with0 to 5 breakpoints
+plot(0:5, AIC(bp.nile, k = log(bp.nile$nobs)), type = "b")
+## AIC
+plot(0:5, AIC(bp.nile), type = "b")
+
+## BIC, AIC, log likelihood of a single partition
+bp.nile1 &lt;- breakpoints(bp.nile, breaks = 1)
+AIC(bp.nile1, k = log(bp.nile1$nobs))
+AIC(bp.nile1)
+logLik(bp.nile1)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

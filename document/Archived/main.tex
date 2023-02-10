@@ -1,0 +1,758 @@
+\documentclass[preprint,authoryear,12pt,english]{elsarticle}
+\usepackage[authoryear]{natbib}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{physics}
+\usepackage{esint}
+\usepackage{romannum}
+\usepackage{comment}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usepackage[perpage,symbol*]{footmisc}
+\renewcommand{\theequation}{\arabic{section}.\arabic{equation}}
+\renewcommand{\baselinestretch}{1.5}
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem*{remark}{Remark}
+%\usepackage[top=1.5cm, bottom=1.5cm, outer=5cm, inner=2cm, heightrounded, marginparwidth=2.5cm, marginparsep=2cm]{geometry}
+\setlength{\marginparwidth}{2cm}
+%\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+
+\makeatletter
+ \def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \let\@oddfoot\@empty
+ \let\@evenfoot\@oddfoot}
+\makeatother
+
+\makeatletter
+\newcommand{\rmnum}[1]{\romannumeral #1}
+\newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\pagenumbering{arabic}
+\begin{frontmatter}
+    \title{Monitoring Structural Breaks in Dynamic Regression Models With Bayesian Sequential Probability Test}
+
+    \author{Haixi Li\fnref{a1,a2}}
+
+    \fntext[a1]{The opinions expressed in this article are those of the author and do not reflect the view of the Freddie Mac.The author thanks Simon Sheng at the American University and Ping.Yu at the University of Hong Kong for helpful comments.}
+
+    \fntext[a2]{Latest revision: \today}
+
+    \address[a]{Freddie Mac, 1551 Park Run Dr., McLean, VA, 22102, USA; Tel: (571)7812981; Email: haixi\_li@freddiemac.com}
+
+
+    \begin{abstract}
+        Structural breaks are pervasive among macroeconomic and financial time series; consequently, forecast may loss accuracy out of sample, which renders monitoring structural breaks an important practice. We develop a structural break monitoring scheme, Bayesian Sequential Probability Test, for dynamic regression models, which consists of two components: a probabilistic detecting statistics and a sequential stopping procedure. We illustrate that not only the magnitude of deviation from the null signifies the breaks, but the increase in the frequency of such signals also provide important information. The detecting statistics incorporates such information into probabilities through Bayes' theorem. The sequential stopping procedure consists of a sequence of optimal stopping times that are derived by optimizing the loss function sequentially. We show the effectiveness of the BSPT by comparing its performance with that of CUSUM under a variety of DGPs and in a few economic applications.
+    \end{abstract}
+
+    \begin{keyword}
+        Structural Breaks; Bayesian Decision Theory; Optimal Stopping; Change Point Detection
+    \end{keyword}
+
+\end{frontmatter}
+
+\newpage
+\setcounter{footnote}{0}
+\section{Introduction}
+\subsection{Motivation}
+Economy is a complicated, dynamic and evolving system, and relations among economic variables are unstable due to changes in law, policies, technologies and consumer preferences etc. \cite{Stock1996EvidenceRelations} documented substantial evidence of parameter instability in their models using 76 representative US monthly time series. However, practitioners of econometrics usually rely on relative stability to build statistical models for forecasts and inferences; when structural breaks happen unacknowledged, forecasts lose accuracy and inferences may be erroneous. Therefore it is of practical importance to detect the structural breaks promptly.
+
+Data arrives sequentially in reality, which raises a concern: is the data generating process of the newly arrived data different from the one of the historical data? More specifically, practitioners\includecomment{practitioners here is referred to general practitioners, not a particular group of practitioners, since within the context, it should be clear. Not need to add definite article.} need to update inference\includecomment{There is a distinction between inference and belief, inference is more general, belief belongs to Bayesian exclusively. I have not argue Bayesism as the proper solution yet, here it is more appropriate to use general terms. This paragraph mainly analyze the problem, it has nothing to do with the solution yet.} about the occurrence of a structural break and decide whether it can be concluded or no sufficient evidence to suggest so. Evidently, such decisions will incur two risks: false alarm and delay detection. It is in the practitioners' interest to minimize both risks simultaneously. However, the two risks are conflicting with each other: one risk can only be reduced at the cost of increasing the other. In order to make optimal decisions, practitioners need to strike a balance\includecomment{strike a balance is an idiom.} between these two risks.
+
+To achieve this goal, we are in need of a sequential statistical decision framework that consists of at least two components: the detecting statistics and a decision rule. The detecting statistics should be updated with newly arrived data to convey uncertainty about the occurrence of a structural break; ideally, the proper language to communicate uncertainty is probability; the decision rule should minimize the practitioners' loss function.
+
+Bayesian statistics is naturally sequential and probabilistic: the notion of updating belief in the wake of new information is fundamental to the Bayesian approach\citep{west1986bayesian}. Bayesian decision theory based on the Bayesian statistics updated with latest information, combined with decision maker's objective, will help to make the optimal decision. It is not always possible to make statistical inference with regard to the use of such information, as represented as a loss function, but such practice should be encouraged in general \citep[p.~1-2]{Berger1985StatisticalAnalysis}; for an early study to incorporate a loss function into statistical analysis, see \cite{Wald1949StatisticalFunctions}.
+
+In this paper, we develop the Bayesian Sequential Probability Test (BSPT), as a structural break monitoring scheme for dynamic regression models.
+\subsection{Literature Review}
+There are extensive studies on structural breaks. However, most existing literature deals with test and identification of structural breaks in data of fixed length. Some classical references include \cite{Andrews1993}, \cite{Andrews1994OptimalAlternative}, \cite{Kuan1995TheView}, \cite{Bai1998a} and  \cite{Bai1994LEASTPROCESSES,Bai1995LeastShift,Bai1996TestingApproach, Bai1997EstimationModels}. Such methods are retrospective and can't be applied repeatedly for monitoring purpose. Since the law of iterated logarithm implies that, the empirical size will approach one with a constant boundary function as sample size grows \citep{Robbins1970StatisticalLogarithm}. Hence, researchers resort to functional central limit theorem (FCLT) to approximate the boundary crossing probabilities of CUSUM type detecting statistics by those of standard Brownian motions.
+
+\cite{Chu1996} broke the ground of monitoring structural breaks in linear regression models and proposed two monitoring schemes for high frequency data: CUSUM and FL monitoring. The CUSUM detector is a partial sum of OLS recursive residuals as the detecting statistics which will converge to standard Brownian motion under the null of no structural breaks. The detecting statistics of FL monitoring are built on the deviation of updated parameter estimates from the historical estimates. These statistics will converge to a vector of Brownian bridges under the null. Whenever one element of the detecting statistics exceeds the boundary, the structural break is concluded.
+%As mentioned before, \cite{Chu1996} resorted to FCLT to characterize the boundary function such that the limiting process of CUSUM will cross with prescribed probability under the null.
+
+%\cite{Leisch2000MonitoringTest} extend \cite{Kuan1995TheView} to establish an unified framework for monitoring structural breaks that includes \cite{Chu1996} as a special case.
+
+Subsequently, \cite{Zeileis2005} proposed an unified framework for monitoring structural breaks, in particular, they used OLS-residuals based CUSUM test, where the regression coefficients are estimated only once and residuals are computed with the estimated coefficients in the monitoring period. If there were structural breaks in the monitoring period, the residuals will deviate from zero consistently. The authors also proposed moving window OLS estimates as another monitoring scheme. The monitoring statistics consists of the differences of moving window parameter estimates and the historical estimate.
+
+Both \cite{Chu1996} and \cite{Zeileis2005} pointed out that the boundary functions in their monitoring scheme are determined for mathematical convenience rather than optimality.
+
+%A few other works on retrospective test but pave the way that lead to \cite{Chu1996} and \cite{Zeileis2005}. \cite{Brown1975TechniquesTime} demonstrate early effort to test the stability of dynamic regression model. They derive recursive residuals that are I.I.D with mean zero and constant variance. The authors propose CUSUM as the partial sum of recursive residuals as the detecting statistics. \cite{Ploberger1989AModel} proposed earlier version of fluctuation test: instead of relying on partial sum of recursive residuals, they propose to calculate the difference between successive parameter estimates and estimates of full sample as the detecting statistics. \cite{Ploberger2006} proposed CUSUM of OLS residuals instead of recursive residuals, the OLS residuals are obtained by regression parameters estimated with full sample.
+
+Besides the literature in econometrics, there is a long history of studies on sequential tests in statistics. Early work dates back at least to \cite{Shewhart1931}. \cite{Wald1947}'s sequential probability ratio test (SPRT) has become a benchmark to sequential tests nowadays. Since its inception\includecomment{From the beginning, inception refers to the origin of an idea, to when and how something was started. "Since its inception, the company has opened five stores". beginning simply refer to the point of time. In this context, inception refers to the origin of sequential analysis starts from Wald and its subsequent development, so, inception is more appropriate. inception also mean the start of subsequence of events, that suggests there are subsequence of events following it. Plus, inception is not bigger word than beginning, they are both elementary school vocabulary.}, the subject has been extensively studied and applied in quality control \citep{Page1955APoint} and clinical trails \citep{Armitage1975SequentialTrails}. We refer to \cite{Lai2001} for a comprehensive review. \cite{Shiryaev1963} was the first to adopt the Bayesian approach to solve the change detection problem with detecting statistics derived through Bayes' theorem and the optimal stopping time obtained by minimizing a loss function which is the sum of the probability of false alarm and expected length of delay detection. But, the alternative distribution in \cite{Shiryaev1963}'s problem is assumed to be known; such assumption is too restrictive for economic applications. We will revive \cite{Shiryaev1963}'s ingenious work and extend it to cases with unknown alternative distributions to monitor structural breaks in dynamic regression models in this paper.
+
+\cite{Li2020MonitoringMethod}
+
+\section{Bayesian Monitoring Scheme} \label{sec:model}
+%In general, a monitoring scheme consists two components: the detecting statistic, such as CUSUM by \cite{Chu1996}, and a decision rule that will help to conclude the occurrence of structural break in the light of newly arrived information, the boundary function for CUSUM is an example. Due to the uncertainty, there is risk associated with the practitioner's decision. Hence, the decision rule should minimize the loss incurred. In this paper we develop a structural breaks monitoring framework, Bayesian Sequential Probability Test (BSPT) which consist probabilistic detecting statistic and a decision rule that will minimize the decision maker's loss function.
+\subsection{Setup of the Problem}
+Consider a dynamic regression model in the following form:
+\begin{equation}
+    y_{t} = x_{t}'\beta_{t} + \varepsilon_{t}\label{equ:OLS},
+\end{equation}
+where $x_{t}$ is a $k$ dimensional vector of regressors and $\beta_{t}$ is a $k\times 1$ vector of regression coefficients, and the error terms $\varepsilon_{t}$ is i.i.d white noise. Assume in the history $t \in \{ 1,...,n \}$, the coefficients in Equation (\ref{equ:OLS}) are constant and equal to $\beta_{0}$. We want to monitor new data from $n+1$ onward to test if there is any structural break happening since. The null hypothesis is
+\begin{equation}
+    \beta_{t} = \beta_{0} \, \forall t
+\end{equation}
+against the alternative that from some unknown time $\tau>n$, the coefficients changes to $\beta_{1} \neq \beta_{0}$. To be more precise, we assume the following statistical process:
+\begin{eqnarray*}
+    H_{0}: y_{t} &=& x_{t}'\beta_{0} + \varepsilon_{t} \text{ for } t = 0,1,2,...,\tau-1,\\
+    H_{1}: y_{t} &=& x_{t}'\beta_{1} + \varepsilon_{t} \text{ for } t = \tau, \tau+1,...
+\end{eqnarray*}
+In practice, practitioners estimate the model with historical data, and start monitoring the out of sample performance of the estimated model with newly arrived data. Let $\hat{\beta}^{n}$ denote the OLS estimates with historical data up to $t=n$. Under the null, the residuals can be approximated as
+\begin{eqnarray*}
+    \hat{\varepsilon}_{t} &=&  \varepsilon_{t} - x_{t}'(\hat{\beta}^{n} - \beta_{0})\\
+    &=& \varepsilon_{t}-x_{t}'((\sum_{i=0}^{n}x_{i}'x_{i})^{-1}\sum_{i=0}^{n}x_{i}'\varepsilon_{i})\\
+    &\approx& \varepsilon_{t}.
+\end{eqnarray*}
+The approximation is reasonable when $\hat{\beta}^{n}$ is estimated consistently. Under the alternative, the residuals can be approximated as
+\begin{eqnarray*}
+    \hat{\varepsilon}_{t} &=&  \varepsilon_{t} - x_{t}'(\hat{\beta}^{n} - \beta_{1})\\
+    &=& \varepsilon_{t} - x_{t}'(\beta_{0} -\beta_{1}+(\sum_{i=0}^{n}x_{i}'x_{i})^{-1}\sum_{i=0}^{n}x_{i}'\varepsilon_{i})\\
+    &\approx& \varepsilon_{t} - x_{t}'(\beta_{0}-\beta_{1})\\
+    &\approx& \varepsilon_{t} - \mu.
+\end{eqnarray*}
+The approximation from the third equation to the fourth, is taken for mathematical convenience. One of the challenges in the change detection literature is the vast potential alternatives and the scantiness of the data under the alternative. Since delaying is costly, and decisions have to be made with limited data. Given the challenge, we take the approach of simplifying the stochastic process under the alternative, since our primary goal is to detect the break with minimum delay, the specification of the stochastic process under the alternative is of secondary concern. However, we did check the performance of the BSPT with simulation and economic applications to verify the validity of such simplification. To summarize, we assume the OLS residuals follow
+\begin{equation}\label{eq: error distribution}
+    \hat{\varepsilon_{t}} \sim \begin{cases}
+        \begin{array}{c}
+            f_{0} = \mathcal{N}(0,\sigma^{2}) \\
+            f_{1} = \mathcal{N}(\mu,\sigma^{2})
+        \end{array} & \begin{array}{l}
+            \text{for } t = 1,2,...,\tau -1 \\
+            \text{for } t = \tau, \tau +1, ...
+        \end{array}
+    \end{cases}
+\end{equation}
+
+%Under the null that $\beta_{t}=\beta_{0}$, we have $\hat{\varepsilon}_{t} \sim \mathcal{N}(0,\hat{\sigma}^{2})$, and under the alternative, we have  $\hat{\varepsilon}_{t} \sim \mathcal{N}(\mu,\hat{\sigma}^{2})$, where $\mu \neq 0$ is unknown in general and $\hat{\sigma}^{2}=\frac{1}{n-k}\sum_{i=1}^{n}\hat{\varepsilon}_{i}^{2}$. We use $\hat{\varepsilon}_{t}$ and $\hat{\sigma}$ as the estimation of random variables $\varepsilon_{t}$ and $\sigma$ respectively.
+
+\cite{Zeileis2005} documented CUSUM type of detecting statistics with recursive residuals and OLS residuals. Under the null, the detecting statistics will converge to Brownian motion and Brownian bridge respectively. The residuals will have zero mean under the null and none zero mean under the alternative. The boundary function is chosen such that under the null, the empirical size is under the prescribed level. The asymptotically behaviour of CUSUM type of detecting statistics is only characterized under the null, and the boundary function is determined correspondingly. The only fact under the alternative is the residuals will have none zero mean. In the comments of \cite{Brown1975TechniquesTime}, one suggested to specify the distribution for the null and alternative as $f_{0}$ and $f_{1}$ respectively and derive the statistics from the likelihood ratio $f_{0}/f_{1}$. This is inline with our idea which will serve the purpose of monitoring breaks: ``to make hard and fast decisions".\footnote{In the comments of \cite{Brown1975TechniquesTime}, the commentator quote the authors:``(the work) should be regarded as yardsticks for the interpretation of data rather than leading to hard and fast decisions".}
+
+There is no assumption regarding the alternative with CUSUM; The Bayesian approach requires so. It is hard to argue which one is more appropriate, we would argue let the users to decide which scheme to serve the purpose better for their problems.
+
+\cite{Brown1975TechniquesTime} show that the recursive residuals are i.i.d, $\mathcal{N}(0,\sigma^{2})$ under more restrictive assumptions. In this paper, to assume OLS residuals are i.i.d $\mathcal{N}(0,\hat{\sigma}^{2})$ means $\hat{\beta}^{n}$ is estimated consistently with historical data and the residuals can be standardized.\footnote{In reality, the OLS residuals are interdependent and heteroskedastic. The assumptions are simplifications for these nuisance parameters: the main purpose is to detect the break with dynamic information; $\tau$ is the parameter of interest, and others are of secondary concern. We are relying on the fact that under the null the residuals will fluctuate around zero, and after the break, the residuals will deviate from zero consistently. We are trying to capture these basic facts about the structural break with simplistic assumptions. Please see Section {\ref{sec:discussion}} for more detailed discussion.}
+
+\subsection{The Bayesian Sequential Probability Test}
+The Bayesian Sequential Probability Test is a Bayesian sequential statistical decision framework for monitoring structural breaks in dynamic regression models. It consists of two components: the detecting statistics of structural breaks and the decision rule (stopping time) that will minimize the practitioner's loss function. Please see Figure(\ref{fig:the BST flowchart}) for an overview of the framework.
+
+\subsubsection{The Detecting Statistics}
+Consider a random sequence of OLS errors $\left\{\varepsilon_{t}, t=1,2,3,... \right\}$. $t=1$ is the starting time of the monitoring period. Assume that conditional on the unobservable parameter $\tau$, the structural break time, the sequence $\left\{\varepsilon_{1},\varepsilon_{2},...,\varepsilon_{\tau-1} \right\}$ being i.i.d with marginal distribution $f_{0}$, and $\{\varepsilon_{\tau},\varepsilon_{\tau+1},...\}$ being i.i.d with marginal distribution $f_{1}$. The null distribution $f_{0}$ is assumed to be known, and $f_{1}$ is parameterized distribution with parameters denoted as $\theta \in \Theta$. $\theta$ indexes the alternative distribution $f_{1}$ as we assume the alternative distribution is unknown\footnote{$\theta$ contains the unknown parameters in alternative distribution $f_{1}$, In the numerical exercises in this paper, we assume the variance can be standardized in the alternative.}.
+
+Assume geometric prior for the structural break time $\tau$:
+\begin{equation}\label{eq: geometric_prior}
+    P( \tau =k)=\begin{cases}
+        \begin{array}{c}
+            \pi \\
+            (1-\pi)\rho(1-\rho)^{k-1}
+        \end{array} & \begin{array}{l}
+            \text{if } k=0 \\
+            \text{if } k=1,2,...
+        \end{array}
+    \end{cases}
+\end{equation}
+Let $\Pi_{0}(\theta)$ denote the prior distribution over $\Theta$, and $\Pi_{t}(\theta)$ denote the posterior distribution of the parameters given information $\mathcal{I}_{t}$. So the prior includes two components: the geometric prior distribution for $\tau$ and prior distribution  $\Pi_{0}(\theta)$ over the parameter space $\Theta$.
+
+Denote $\varepsilon^{t}=\{\varepsilon_{1},...,\varepsilon_{t}\}$ as the history of random variable $\varepsilon_{t}$ and $\mathcal{X}^{t}=\mathcal{X}_{1} \times \mathcal{X}_{2} \times \dotsc \mathcal{X}_{t}$, where $\mathcal{X}_{t}$ is the sample space for $\varepsilon_{t}$.
+We now define the probability distribution. For each set $A = \{ \omega \colon \varepsilon_{1}\leq x_{1},...,\varepsilon_{t}\leq x_{t}  \} \in \mathcal{X}^{t}$, given $\theta \in \Theta$
+\begin{eqnarray*}
+    P_{\theta}(A) &=& \pi P^{1}_{\theta}(A)+(1-\pi)\sum_{i=0}^{t-1} \rho(1-\rho)^{i}P^{0}\{ \varepsilon_{1}\leq x_{1},...,\varepsilon_{i}\leq x_{i} \}\\
+    &&\times P^{1}_{\theta}\{ \varepsilon_{i+1}\leq x_{i+1},...,\varepsilon_{t}\leq x_{t} \} + (1-\pi)(1-\rho)^{t}P^{0}(A)
+\end{eqnarray*}
+The $P^{0}$ and $P^{1}_{\theta}$ are the probability measures underlying the null distribution and the alternative distribution given $\theta \in \Theta$ respectively. More generally, the probability measure given distribution $\Pi$ over parameter space $\Theta$ is defined as:
+\begin{equation}
+    P_{\Pi}(A) = \int_{\Theta}P^{\pi}_{\theta}(A)d\Pi (\theta)\label{eq:prob measure}
+\end{equation}
+
+\begin{definition}
+    \label{post_pi}
+    Define the detecting statistics as the posterior probability of structural break happened before time $t$, and $\mathcal{I}_{t}$ denotes the information available at time $t$.
+    \begin{equation}
+        \pi_{t} = P(\tau \leq t \text{\textbar} \mathcal{I}_{t}), \text{ for } t = 1,2,3,....
+    \end{equation}
+\end{definition}
+We will describe the evolution of $\pi_{t}$. Given $\theta \in \Theta$, let $\pi_{t,\theta}$ denote the probability of a structural break that has occurred before $t$ conditional on $\theta \in \Theta$:
+\begin{equation}\label{eq:pi_k}
+    \pi_{t,\theta} = P(\tau \leq t \text{\textbar} \mathcal{I}_{t},\theta),
+\end{equation}
+where $\mathcal{I}_{t}$ is the information set available at time $t$.
+
+Given $\pi_{t-1}$ and $\varepsilon_{t}$, $\pi_{t,\theta}$ evolves according to the following equation:
+\begin{equation}
+    \pi_{t,\theta} = \frac{\left(\rho(1-\pi_{t-1})+\pi_{t-1}\right)f_{1}(\varepsilon_{t}\text{\textbar}\theta)}{f(\varepsilon_{t}\text{\textbar}\theta)}\label{eq:piTheta}
+\end{equation}
+where
+\begin{eqnarray*}
+    f(\varepsilon_{t}\text{\textbar}\theta) &=& (1-\rho)(1-\pi_{t-1})f_{0}(\varepsilon_{t})+ \left(\pi_{t-1}+\rho(1-\pi_{t-1})\right)f_{1}(\varepsilon_{t}\text{\textbar}\theta).
+\end{eqnarray*}
+Given the likelihood at time $t$, we can update the posterior at $t-1$. The posterior distribution over the parameter space is denoted as $\Pi_{t}$, and $\Pi_{t}$ evolves as
+\begin{equation}
+    \Pi_{t}(\theta) = \frac{f\left( \varepsilon_{t} \text{\textbar}\theta \right)\Pi_{t-1}(\theta)}{\int f\left(\varepsilon_{t}\text{\textbar}\theta \right)d\Pi_{t-1}(\theta)}.
+\end{equation}
+Lastly, $\pi_{t}$ is updated as
+\begin{equation}
+    \pi_{t} = \int_{\Theta} \pi_{t,\theta}d\Pi_{t}(\theta)
+\end{equation}
+Since the parameter $\theta$ is unknown, the idea is to average it out with available information. It is trivial to show that given posterior distribution $\Pi_{t}$, the expectation of $\pi_{t}$ only dependent on $\pi_{t-1}$, that makes value function iteration a possibility, which is key to solve the practitioner's optimization problem.
+
+\subsubsection{The Practitioner's Objective Function}
+The practitioner's objective is to detect the structural break as soon as possible with minimum probability of false alarm. This is a sequential decision problem, where the practitioner will examine a sequence of observations one at a time, and decide after each observation whether to conclude the break or continue sampling.
+
+Such decisions will incur two risks: false alarm and delay detection. When the announcement occurs before the break, it is a false alarm; otherwise, it is delay detection\footnote{The definitions are conceptual, since the structural breaks are not observable, so which mistake has been made is only known retrospectively with certain confidence when there are sufficient information.}. Moreover, the two risks are conflicting with each other: one risk can only be minimized at the cost of the other. The loss function is the weighted sum of the two risks, and the practitioner will need to strike a balance between the two risks in order to achieve optimality.
+
+The expected loss function of stopping time $T$ given parameter $\theta$ is given by
+\begin{equation}
+    L(\theta,T) = E_{\theta}\left\{ 1(T<\tau) +c(T-\tau)^{+}\right\}.
+\end{equation}
+The first component is the probability of false alarm, and the second component is the expected length of delay detection multiplied by a controlling factor $c$. The controlling factor reflects the practitioner's penalty on delay detection relative to false alarm. The stopping time $T$ or stopping rule\footnote{Stopping time is a more formal notion, it basically means the final time to announce the structural break. It is a random function measurable to information available at the time.} is a measurable function of information available at time $t$. The loss function with known alternative was first proposed and solved by \cite{Shiryaev1963}, but the assumption of known alternative is too restrictive to economic applications in general. Our work was built on \cite{Shiryaev1963, Shiryaev1978OptimalRules}'s original work and extend it to unknown alternative in the context of applied econometrics. Please refer to \cite{Poor2009QuickestDetection} for exposition with more modern notation.
+
+The Bayes risk function given the prior $\Pi_{0}$ is given by
+\begin{equation}
+    r(\pi,\Pi_{0}) = \inf_{T \in \mathbf{T}} E^{\Pi_{0}}L(\theta,T).\label{eq:Bayes Risk}
+\end{equation}
+The expectation is taken over the parameter space $\Theta$.
+\subsubsection{the Solution to the Practitioner's Problem}
+The optimization problem in Equation(\ref{eq:Bayes Risk}) is very complicated. To solve it with \cite{Shiryaev1963} type of stopping time at time 0 is intractable. This is mainly due to the posterior distribution $\Pi_{t}$ that defines the expectation, is evolving. We formulate the solution based on the ground work laid down by \cite{Berger1985StatisticalAnalysis}\footnote{\cite{Berger1985StatisticalAnalysis} laid down the ground work for Bayesian sequential analysis in Chapter 7, which help us to formulate the solution.} for Bayesian sequential decision problems: after each new observation is taken, we should consider a new sequential problem with updated prior, i.e. the posterior as the new prior, and minimize the loss function looking forward with available information\footnote{The problem in general is very complicated and difficult, other approaches in change detection literature include \cite{Lai2010SequentialUnknown}. The authors proposed a solution which is asymptotically Bayes in the sense $\rho \to 0$.}. To be more specific, consider $\varepsilon_{t}$ is observed, then we obtain the posterior $\Pi_{t}$ given $\varepsilon^{t}$, then we can consider a new sequential problem with $\Pi_{t}(\theta)$ as the prior and $\{ \varepsilon_{t+1}$, $\varepsilon_{t+2}$,...\} as the possible observations. We will solve the optimization problem every time when there is new data, hence the optimal stopping time will reflect the latest information available which is represented by the posterior distribution at the time. This is in sharp contrast to the boundary function of CUSUM which is usually a deterministic function of time.  We will obtain a sequence of optimal stopping times indexed by the posterior distribution $\Pi_{t}$. We present the solution more formally in the flowing\footnote{To build up the machinery for Bayesian sequential analysis is a complicated task, that requires tremendous amount of notations. Figure (\ref{fig:the BST flowchart}) is meant to offer an overview of the framework.}.
+
+Define the sequential stopping procedure $\mathcal{T}$ as a sequence of stopping times $T_{0}$, $T_{1}(\varepsilon^{1})$, $T_{2}(\varepsilon^{2})$,...: the procedure will stop when the first stopping time declares to stop.
+\begin{equation}
+    \mathcal{T}(\mathcal{X}) = \inf \{ t \geq 0:T_{t}(\varepsilon^{t})=t\}
+\end{equation}
+At any time $t$, after $\varepsilon^{t}$ is observed, the practitioner is facing the following problem:
+\begin{equation}
+    r(\pi,\Pi_{t}) = \inf_{T\in \mathbf{T} } E^{\Pi_{t}} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\},
+\end{equation}
+where $\mathbf{T}$ is a collection of stopping times such that $E^{\Pi_{t}}(T_{t})<\infty$. $r(\pi,\Pi_{t})$ represents the minimum Bayes risk that can be attained when $\varepsilon^{t}$ has been observed. Given $\varepsilon^{t}$, the decision is whether to stop or continue sampling. If immediate stop yield less loss than expected loss of continuing, it will be optimal to stop or continue otherwise. It is not difficult to show the loss of immediate stop given $\pi_{t}$, but to show the expected loss of continuing involves quantifying the value function. The value function will be computed through value function iteration with the latest information available through the posterior distribution $\Pi_{t}$\footnote{Other approximation method to attain optimal stopping time has been proposed such as one-step-ahead method.}.
+
+Define the optimal stopping time
+\begin{equation}
+    T_{t}^{*} = \arg \inf_{T\in \mathbf{T} } E^{\Pi_{t}} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\}.
+\end{equation}
+Hence the optimal sequential stopping procedure will consist of a sequence of optimal stopping times:
+\begin{equation}
+    \mathcal{T}^{*} = \left\{ T_{1}^{*},T_{2}^{*},...,T_{t}^{*},...\right\}.
+\end{equation}
+Now, we solve the optimal stopping problem for any generic prior distribution $\Pi$\footnote{If the prior distribution $\Pi$ is degenerate, it is then the problem shoved by \cite{Shiryaev1963}.}:
+\begin{lemma}
+    \label{trans_obj}
+    Suppose $E^{\Pi}(\tau) < \infty$ and $E^{\Pi}(T) < \infty$ and define the sequence $\pi_{t}$ by
+    \begin{equation}
+        \pi_{t} = P(\tau \leq t \mid \mathcal{I}_{t}), \text{ for } t = 0,1,2,...
+    \end{equation}
+    Then for $T \in \mathbf{T}$, we can write
+    \begin{equation}
+        E^{\Pi} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\}= E^{\Pi}(1-\pi_{T}+c\sum_{i=0}^{T-1}\pi_{i})
+    \end{equation}
+\end{lemma}
+
+Now the Bayes risk function is transformed as
+\begin{equation}
+    r(\pi,\Pi) = \inf_{T\in\mathbf{T}}\left\{ E^{\Pi}(1-\pi_{T}+c\sum_{t=0}^{T-1}\pi_{t})\right\}
+\end{equation}
+Such a result may appear surprising at first, but after looking at it closely, it is very intuitive: the loss is the sum of probability of false alarm $(1-\pi_{T})$ and expected delay $( c\sum_{t=0}^{T-1}\pi_{t})$ at the time of stopping, $c$ is the loss of per period of delay. \cite{Shiryaev1963} first showed this transformation for known alternative distribution.
+
+Since we have shown that $\pi_{t}$ is a Markov process given expectation $E^{\Pi}$ defined with prior distribution $\Pi$, we can apply the result of Markov optimal stopping theory. The optimization problem became:
+\begin{equation}
+    v\left(\pi\right)=\min\left\{ 1-\pi,c\pi+ \int_{\Theta} v\left(\pi'_{\theta}\mid \pi\right) d\Pi(\theta) \right\} \label{eq:value function},
+\end{equation}
+where $\pi'_{\theta}$ given $\pi$ is obtained by Equation (\ref{eq:piTheta}), and the function $v(\pi)$ can be obtained through value function iteration. The stopping time
+\begin{equation}
+    T^{*}=\inf\left\{ t \geq 0:v\left(\pi_{t}\right)=\left(1-\pi_{t}\right)\right\} \label{equ:optimal_t}
+\end{equation}
+is the optimal stopping time. This result follows from Markov optimal stopping theory\footnote{Please see Corollary 3.11 on page 59 of \cite{Poor2009QuickestDetection} for more detailed explanation.}. The intuition is evident: to stop will incur loss $1-\pi$, which is the probability of false alarm; to continue will incur one period of expected loss of delay $c\pi$ plus the expected loss of next period on. The first time that stopping yields less loss, then it is the time to stop. The controlling factor $c$ is the unit loss of delay.\footnote{Equation(\ref{eq:value function}) is essentially value function iteration, $\pi$ is the state variable, which is more familiar to economist. Figure (\ref{fig:value_function}) illustrates the process of value function iteration.}
+
+The function in Equation (\ref{equ:optimal_t}) defines two regions of the state space $\pi$: the continuation region defined as $\{\pi : v(\pi)>1-\pi \}$; the rejection region defined as $\{\pi : v(\pi)<1-\pi \}$. It is optimal to stop when $\pi$ cross from continuation region into rejection region. Continue from Equation(\ref{equ:optimal_t}), we have
+\begin{equation}
+    T^{*} = \inf\{t\geq0 \mid \pi_{t}\geq\pi^{*}\}.\label{eq:threshold}
+\end{equation}
+The Equation (\ref{eq:threshold}) defines the optimal stopping time as a threshold $\pi^{*}$ such that $v(\pi)=1-\pi$. When the detecting statistics $\pi_{t} \geq \pi^{*}$ at time $t$, the structural break should be concluded.
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[c]{1\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{\string"graph/value_function\string"}
+            \caption{Iteration of value function until it converges. The value function crosses the line $1-\pi$ at $\pi^{*}$.}
+            \label{fig:value_function}
+        \end{minipage}
+    \end{figure}
+\end{center}
+\section{Simulation}
+We present some simulation results in this section. Following \cite{Chu1996} and \cite{Zeileis2005}, the data are generated from i.i.d $\mathcal{N}(0,1)$ and $\mathcal{N}(0.8,1)$ for null and alternative distribution respectively\footnote{As a well known fact that the bigger the difference between null and alternative, the easier the detection. We choose $0.8$ that is in line with previous studies.}. The monitoring period starts at 100 and the break times are $\tau \in \{110,150, 200, 300\}$. The number of simulation is 10,000. The mean of the alternative distribution is unknown to the practitioner. The results are summarized in Table(\ref{table:simulation_mu}). Figure(\ref{fig:simulation_mean}) provide an illustration of the BSPT. From the above table, one can see that with higher value of control factor $c$, the expected delay is shorter and probability of false alarm is higher. This is due to the trade-off between the two risks that is weighted by control factor.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[c]{1\textwidth}
+            \centering
+            \includegraphics[scale=0.50]{\string"graph/simu_mean\string"}
+            \caption{Demonstration of BSPT with Monte Carlo simulation. The mean of the simulated process changes from 0 to 0.8 at 150. When the detecting statistics exceed the decision threshold: $\pi \geq \mathcal{T}^{*}$ at 160, the structural break is announced.}
+            \label{fig:simulation_mean}
+        \end{minipage}
+    \end{figure}
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+    \footnotesize
+    \centering
+    \begin{tabular}{c c c c }
+        \hline
+        \hline
+        Control Factor             & Structure Break Time & Expected Delay(sd) & Prob of False Alarm \\
+        \hline
+        \multirow{4}{*}{$c=0.005$} & 110                  & 27.64 (14.70)      & 0.28\%              \\
+                                   & 150                  & 29.27 (21.43)      & 0.52\%              \\
+                                   & 200                  & 30.68 (27.75)      & 1.09\%              \\
+                                   & 300                  & 33.75 (38.77)      & 2.61\%              \\
+        \hline
+        \multirow{4}{*}{$c=0.008$} & 110                  & 25.65 (14.24)      & 0.40\%              \\
+                                   & 150                  & 27.31 (20.37)      & 0.81\%              \\
+                                   & 200                  & 28.57 (25.84)      & 1.71\%              \\
+                                   & 300                  & 31.02 (35.49)      & 4.19\%              \\
+        % [1ex] adds vertical space
+        \hline
+        \multirow{4}{*}{$c=0.01$}  & 110                  & 24.88 (13.97)      & 0.48\%              \\
+                                   & 150                  & 26.41 (20.04)      & 1.04\%              \\
+                                   & 200                  & 27.56 (24.63)      & 2.16\%              \\
+                                   & 300                  & 29.49 (32.63)      & 5.28\%              \\
+        %inserts single line
+        \hline
+        \hline
+    \end{tabular}
+    \protect\caption{Summary of Simulation Results with Structural Break in the Mean}
+    \label{table:simulation_mu}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We also compare the performance of BSPT with that of CUSUM. The results are presented in Table (\ref{table:compare CUSUM}). The alternative process is simulated with the following equation: $y_{t}=\alpha+\gamma y_{t-1}+\epsilon_{t}$, where $\epsilon_{t}$ is white noise. This exercise also exams the BSPT's ability to deal with intertemporally dependent alternative processes. In general, BSPT can detect the break with much less average delay under similar empirical size. More importantly, BSPT is much more robust against early and late structural breaks. It is well known that the CUSUM type of detecting statistics is powerful for the early break and loss its power gradually as monitoring continues.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+    \begin{minipage}{1\linewidth}
+        \scriptsize
+        \centering
+        \begin{tabular}{c c r r r r r r }
+            \hline
+            \hline
+                                          &            & \multicolumn{3}{c}{CUSUM} & \multicolumn{3}{c}{BSPT}                                                                             \\
+            \hline
+                                          & Break Time & Exp Delay(sd)             & type \Romannum{1}        & type \Romannum{2} & Exp Delay(sd) & type \Romannum{1} & type \Romannum{2} \\
+            \hline
+            \multirow{2}{*}{$\alpha=0.8$} & 110        & 30(19)                    & 0.55\%                   & 0\%               & 26(14)        & 0.36\%            & 0\%               \\
+                                          & 150        & 58(34)                    & 1.90\%                   & 0\%               & 27(20)        & 0.86\%            & 0\%               \\
+            \multirow{2}{*}{$\gamma=0$}   & 200        & 90(52)                    & 2.52\%                   & 0\%               & 28(25)        & 1.57\%            & 0\%               \\
+                                          & 300        & 151(84)                   & 2.71\%                   & 0.12\%            & 31(35)        & 4.40\%            & 0\%               \\
+            \hline
+            \multirow{2}{*}{$\alpha=0.3$} & 110        & 61(74)                    & 0.48\%                   & 0.18\%            & 34(32)        & 0.36\%            & 0\%               \\
+                                          & 150        & 108(99)                   & 1.99\%                   & 0.91\%            & 37(35)        & 0.86\%            & 0\%               \\
+            \multirow{2}{*}{$\gamma=0.5$} & 200        & 153(120)                  & 2.64\%                   & 2.29\%            & 38(38)        & 1.57\%            & 0\%               \\
+                                          & 300        & 223(134)                  & 3.41\%                   & 8.50\%            & 41(45)        & 4.40\%            & 0\%               \\
+            \hline
+            \multirow{2}{*}{$\alpha=0.1$} & 110        & 86(129)                   & 0.55\%                   & 8.76\%            & 33(36)        & 0.36\%            & 0\%               \\
+                                          & 150        & 152(162)                  & 1.92\%                   & 19.66\%           & 34(35)        & 0.86\%            & 0\%               \\
+            \multirow{2}{*}{$\gamma=0.7$} & 200        & 199(168)                  & 2.64\%                   & 30.52\%           & 34(34)        & 1.57\%            & 0\%               \\
+                                          & 300        & 240(158)                  & 3.16\%                   & 48.43\%           & 35(36)        & 4.40\%            & 0\%               \\
+            \hline
+            \multirow{2}{*}{$\alpha=0.0$} & 110        & 48(80)                    & 0.57\%                   & 6.80\%            & 22(23)        & 0.36\%            & 0\%               \\
+                                          & 150        & 96(119)                   & 1.89\%                   & 20.39\%           & 23(24)        & 0.86\%            & 0\%               \\
+            \multirow{2}{*}{$\gamma=0.8$} & 200        & 134(138)                  & 2.45\%                   & 36.58\%           & 24(23)        & 1.57\%            & 0\%               \\
+                                          & 300        & 172(139)                  & 2.99\%                   & 59.24\%           & 24(24)        & 4.40\%            & 0\%               \\
+            \hline
+            \hline
+        \end{tabular}
+        \protect\caption{We compare the performance of CUSUM and BSPT under the same alternative process: $y_{t} = \alpha + \gamma y_{t-1} + \epsilon_{t}$, where $\epsilon_{t}$ is white noise. The results of CUSUM are obtained with OLS-CUSUM method in the R package strucchange by \cite{Zeileis2015StrucchangeModels} with 10,000 simulations. The control factor in BSPT is set at 0.008 and the prior is presented in Table (\ref{tbl:simulation prior}). Type \Romannum{2} error refers to the break is not detected before 900 periods.}
+        \label{table:compare CUSUM}
+    \end{minipage}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This result can be attributed to a few advantages of BSPT: First, the sequential stopping procedure consists of a sequence of optimal stopping times that reflect dynamic information in the data arriving sequentially. Second, it is commonly known in the literature that large deviation from the null is evidence in favour of the alternative; but the increase in the frequency of such deviation is also very important for detection. The detecting statistics of BSPT is keen to incorporate the increase in the frequency and convert it to the posterior probability through Bayesian updating. Third, the trade off between false alarm and delay detection is optimized dynamically with latest information. In contrast to the CUSUM type of statistics, the decision rule usually is a deterministic function of time.
+
+\section{Applications of BSPT}
+We demonstrate the ability of BSPT with a few economic applications including German M1 money demand, US labor productivity and US HPI. We use the same set of prior as in Table (\ref{tbl:simulation prior}) and $\rho=0.01$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+
+    \footnotesize
+    \centering
+    \begin{minipage}{0.6\linewidth}
+        \centering
+        \begin{tabular}{c c}
+            \hline
+            \hline
+            \multicolumn{2}{c}{Prior Distribution in Simulation} \\
+            $\mu$  & $[-2,-0.6]\cup[0.6,2]$                      \\
+            $\pi$  & 0.5                                         \\
+            $\rho$ & 0.01                                        \\
+            \hline
+            \hline
+            %inserts single line
+        \end{tabular}
+        \protect\caption{Prior Distribution For the Parameters}
+        \label{tbl:simulation prior}
+    \end{minipage}
+
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Boom-Bust Cycles and Forecast Performance of House Price Model}
+The recent financial crisis in 2008 has revived the research interest in housing price forecast. Particularly the challenge posed by the boom-bust cycles of house price to forecast. When the house price gets into a boom cycle, forecast tends to be underestimated; when the house price gets into a bust cycle, forecast tends to be overestimated. Following \cite{Miles2008Boom-bustPrices}, we use AR(2) model for one period ahead forecast for five states with diverse house price dynamics: California, Florida, Massachusetts, Ohio and Texas. The house price of theses states display a variety of different growth patterns. We use FHFA HPI quarterly purchase-only indexes and focus on the boom-bust cycle in the 2000s.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.55]{"graph/grayed_HPI_5States"}
+        \protect\caption{\label{fig:5 states HPI}The Annual Growth Rate of HPI for Five States}
+
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We use data from 1991 Q2 to 2000 Q4 as the historical sample to estimate the AR(2) model for the five states, and start monitoring the one period ahead forecast errors from 2000 Q1.
+
+For FL, we first identify a structural break in the forecast errors with positive mean in 2004 Q1. and then we update the model estimation with data from 1991 to 2005, and then start monitoring from 2004. We identify forecast errors with negative mean at 2006 Q1. Please see Figure(\ref{fig:FL_boom},\ref{fig:FL_bust}) for the graphical presentation of the exercise.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_FL_boom"}
+        \protect\caption{\label{fig:FL_boom}The Boom of House Price in FL}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_FL_bust"}
+        \protect\caption{\label{fig:FL_bust} The Bust of House Price in FL}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+As for CA, we detect a structural break in the forecast errors with negative mean in 2005 Q3. As it can be seen from Figure(\ref{fig:CA_bust}). Similar to CA, we also identify bust at 2006 Q1 for OH and 2010 Q2 for TX. For MA, we did not find sufficient evidence to reject the null with zero mean forecast errors. Please see Figure(\ref{fig:CA_bust},\ref{fig:OH},\ref{fig:TX} and \ref{fig:MA}).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_CA_bust"}
+        \protect\caption{\label{fig:CA_bust}The Bust of House Price in CA}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_TX"}
+        \protect\caption{\label{fig:TX}The Bust of House Price in TX}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_OH"}
+        \protect\caption{\label{fig:OH}The Bust of House Price in OH}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{"graph/Bsquid_MA"}
+        \protect\caption{\label{fig:MA}The House Price Forecast Errors in MA}
+    \end{figure}
+    \par\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{US Labor Productivity}
+It has been asserted that the US labor productivity has experienced a speedup in the second half of 1990s. \cite{Hansen2001TheChange} investigated US labor productivity in the manufacturing/durable sector, and found strong evidence of a structural break sometime between 1992 and 1996, and weaker evidence of structural break in the 1960s and early 1980s. We use data ranging from Jan 1964 to Dec 1980 as the historical sample to estimate an AR(1) model. Standardized forecast errors are obtained from Jan 1980 to Dec 1997. The result is presented in Figure(\ref{fig:USlaborProd}). We use the same data as in \cite{Hansen2001TheChange}, and detect a structural break at Aug 1997. The BSPT yields a little delayed result than \cite{Hansen2001TheChange}, this is because \cite{Hansen2001TheChange}'s test statistics is derived from the whole sample, while the stopping time in BSPT only utilizes the information available at the time of the decision.
+
+As can be seen in Figure(\ref{fig:USlaborProd}), the forecast errors start to deviate from zero and become positive since early 1992. The detecting statistics starts to pick up, as the information favouring the alternative is not strong, the detecting statistics stays way below the threshold before 1994. After such evidence that favouring the alternative keep flowing in, the information is picked up through likelihood function and update the detecting statistics. This illustrates an important aspect of the BSPT: not only the magnitude of the information favouring the alternative is important to detection, but the increase in the frequency of such information is also important. The Bayesian updating algorithm is keen to pick up such signal. Such intuition is reflected in Equation(\ref{eq:piTheta}).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[c]{1\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{"graph/US_labor_prod"}
+            \protect\caption{\label{fig:USlaborProd}The upper panel is the forecast error of US labor productivity. The lower one consists of the detecting statistics $\pi$ and the sequential stopping procedure $\mathcal{T}^{*}$. The forecast errors deviate from zero since 1992, and the probability starts to pick up as more evidence favouring the alternative flows in. Eventually it crosses the threshold at Aug 1997.}
+        \end{minipage}
+    \end{figure}
+    \par\end{center}
+\subsection{German M1 Money Demand}
+\cite{Lutkepohl1999InvestigatingFunction} studied the stability and linearity of German M1 money demand function. They found clear evidence of structural instability after he monetary unification of German happened since 1990 Q3. We use the same linear model and data as in \cite{Zeileis2005} and detect the structural break at 1990 Q4 from monitoring perspective. Figure(\ref{fig:GermanM1}) demonstrates the monitoring process.
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[c]{1\textwidth}
+            \centering
+            \includegraphics[scale=0.5]{\string"graph/German_M1\string"}
+            \protect\caption{\label{fig:GermanM1}The German M1 Money Demand}
+        \end{minipage}
+    \end{figure}
+    \par\end{center}
+\section{Discussion}\label{sec:discussion}
+% residual detection vs parameter detection
+% Advantage of Bayesian method
+% 1 more naturally sequential
+% 2 keen to pick up two information that is key to detection: magnitude and frequency
+% magnitude is reflected by likelihood and build into probability
+% the frequency information is Incorporated through the updating process with Bayesian theorem
+% the choice of prior
+% the choice of control factor
+%In this paper, we focus on mean shift in standardized OLS residuals. When structural breaks happened, the mean of the OLS residuals will change. To monitor the mean change of the OLS residuals will yield general results.
+The monitoring scheme of structural breaks suffers from huge potential alternatives. To make the matter worse, the nature of the problem requires the practitioner to make decisions with limited post-change data because delay is costly. \cite{Andrews2003End-of-sampleTests} studied one-time end-of-sample instability test; and proposed S test that relies on the fact that under the null, the errors are centered around zero, while the post-change errors will deviate from zero, and a large deviation from zero is evidence against the null. We rely on the same notion that under the alternative, the errors will deviate from zero consistently. Also, the primary interest of monitoring is the structural break time $\tau$, all other parameters are of secondary concern.
+
+Given the above reasons, we assume the errors under the alternative to be i.i.d. with constant variance and non-zero mean. The process of unknown mean plus standard errors is the simplest process that can capture the consistent nonzero errors under the alternative. In practice, intertemporally dependent errors are conceivable due to structural breaks. We did simulations to test the performance of BSPT given AR(1) residuals under the alternative. The results are summarized in Table(\ref{table:compare CUSUM}).
+
+We choose the prior for the mean of the alternative distribution to be uniform distribution over the set $[-2,-0.6]\cap[0.6,2]$\footnote{We can include variance as an unknown parameter. Given the limited post-break data and the variance is also a nuisance parameter, we choose standard variance for all the exercises in this paper. We also did simulation with variance as the unknown parameter that can be provided per request. We can also think of the prior as the specification of the composite alternative, since the detection process is essentially sequential hypothesis testing.}. Uniform prior is the most uninformative prior. The prior chosen is used through out the exercises in this paper. This also rises another interesting intuition: the purpose of monitoring is to identify the break as soon as possible with minimum risk of false alarm. If the practitioner has knowledge about the alternative, that should be incorporated into the prior. The better the alternative is known, the quicker the break can be identified\footnote{In certain situation, such prior knowledge is applicable. For example, if the structural break is caused by business cycle, that in normal time, the growth rate is positive and in down time, the growth rate will change from positive to negative.}. The special case is when the alternative is known. Following \cite{Shiryaev1963}, we also assume geometric prior for the breaking time $\tau$ in Equation (\ref{eq: geometric_prior}), higher value of $\rho$ means earlier break in the detecting period. This challenge to specify $\rho$ is not unique to the Bayesian approach that the decision about the likely timing of future break. It is well known that the boundary in \cite{Chu1996} perform well for early breaks, but gets increasingly insensitive to late breaks. \cite{Zeileis2005} proposed different boundaries to distribute the empirical size more evenly. The authors also acknowledge that it is desirable to have more flexible and less heuristic instrument to select boundaries according to a specified prior distribution of the timing of the break. If there is information regarding the likely timing of the future break, it can be incorporated as the prior. We choose $\rho=0.01$ in all our exercises. The simulation results of other specifications can be provided per request.
+
+%The detecting statistics of BSPT is probabilistic, which can be considered as the intellectual decedent of \cite{Wald1947}'s sequential probability ratio test (SPRT). The detecting statistics of SPRT is the likelihood ratio, which incorporate the information embedded in the likelihood function. \cite{Shiryaev1963} convert the likelihood ratio to probability through Bayes' theorem with simple alternative. In this paper, we extend \cite{Shiryaev1963}'s approach to composite alternatives by calculated the expectation of probability, the expectation is taken over the posterior distribution over the parameter space. 
+
+%We also assume the OLS residuals has constant variance. This is not a necessary assumption for the framework, since we can include the variance $\sigma$ in the set of parameters for the alternative distribution. This is a simplification assumption for the numerical exercises in this paper though. But the algorithm does involve value function iteration, so it suffers from the curse of dimensionality. But the parameter of primary interest is $\tau$, the time of structural break. In this sense, the mean of the alternative distribution is a nuisance parameter, let along the variance of the distribution. Due to the nature of the problem, the need to announce the structural break as soon as possible, it is deemed there won't be sufficient data under the alternative. So we deem the constant variance under the alternative to be a reasonable simplification\footnote{We also did simulation study with structural break in the variance, results can be provided per request.}. 
+
+%In this paper, the OLS residuals process is assumed to be i.i.d under the alternative. It may seem too restrictive, especially for time series models. Under the alternative, the residuals may be inter-temporally dependent due to the structural break. We recognize the issue and offer the following defense. The nature of the monitoring problem is to make a decision with limited information. In particular, limited data after the break. And the sole purpose of monitoring is to detect the structure break as soon as possible: inference about $\tau$, the structural break time. That leaves the real process under the alternative as of secondary concern. In practice, it is also not realistic to infer complicated dynamics of the process under the alternative with limited relevant information. We took the approach to use simple as unknown mean plus errors to model the process under the alternative. The variance can be unknown as well, but in our quantitative exercise we assume variance that can be standardized. We can see Figure(\ref{fig:FL_boom},\ref{fig:FL_bust}) etc. One can see that with limited data, it is very difficult to conclude that the residuals follow AR1 or other dynamics. The mean plus normal error is a reasonable simplification. Conceptually, it is conceivable to incorporate precision of alternative parameter estimation into the loss function, and it will certainly delay the announcement.
+
+The controlling factor $c$ is the cost of one period of delay. Higher value of the controlling factor suggests higher punishment for delay. We tabulated different value of the controlling factor and corresponding probability of false alarm and expected length of delay in Table(\ref{table:simulation_mu}). More tabulation can be provided by request.
+
+As we can see from Figure(\ref{fig:simulation_mean}), the decision threshold is decreasing since 150. This is because the information favouring the alternative starts to accumulate after 150. the evolution of the posterior distribution reflect this: the probability mass start to accumulate in the positive region(see Figure(\ref{fig:post_dist})). As such information accumulates, there is less probability of false alarm; in order to minimize delay, we can afford to lower the threshold. Hence the threshold reflect the inflow of the information dynamically.
+\noindent \begin{center}
+    \begin{figure}[H]
+        \centering
+        \begin{minipage}[c]{1\textwidth}
+            \centering
+            \includegraphics[scale=0.6]{\string"graph/threeDdist\string"}
+            \caption{This figure shows the evolution of posterior distribution of the parameter in the alternative distribution. The structural break happens at 150, and is detected at 160. As more information supporting the alternative accumulates, the posterior distribution amasses around 0.8.}
+            \label{fig:post_dist}
+        \end{minipage}
+    \end{figure}
+\end{center}
+%explanation: when the posterior probability distribution starts to amass on alternative region, that means we are more certain that the alternative has happened. In this sense, we have small prob of false alarm. And in general, with know parameter, the threshold will be lower, since it is an easier detection problem.
+
+
+\section{Concluding Remarks}\label{sec:conclusion}
+Relationships among economic variables that are known to be stable historically might change due to structural breaks out-of-sample. Consequently, it is important to monitor structural breaks. Monitoring is a process of sequential statistical decision making. To solve such a problem, we start with formulating the practitioner's objective function as weighted sum of two risks: the probability of false alarm and the expected length of delay detection. We derive the decision rule by optimizing the objective function sequentially, that results in a sequence of optimal stopping times. It is important to note that the magnitude of deviation from the null is sure an evidence favouring the alternative, but the increase in the frequency of such signals is also very important for detecting purpose. The probabilistic detecting statistics of BSPT is keen to pick up such signals through Bayesian updating. We demonstrate the effectiveness of the framework with Monte Carlo simulations and economic applications.
+
+Monitoring is a process of sequential hypothesis testing, and Bayesian statistics is inherently sequential. We believe this is a promising line of research. Future research might include a wider range of unknown parameters; recursively estimated OLS parameters etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendix section}\label{app}
+\subsection{Figures and Tables}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+\section{Proof}
+\begin{proof}[Proof of Lemma \ref{trans_obj}]
+    \begin{remark}
+        The proof with know alternative was done first by \cite{Shiryaev1963} then \cite{Poor2009QuickestDetection} presented more modern approach. In the case of parameterized distribution, it is assumed that the parameters of the alternative distribution is known a priori. We extend the proof to unknown alternative. The expectation and probability is taken given the uncertainty in the problem, which the parameterized alternative distribution is unknown. Hence the expectation is taken over the parameter space with posterior distribution informed with information available at time $t$.
+    \end{remark}
+    For any stopping time $T$, we have the following
+    \begin{equation}
+        P(T<\tau) = E^{\Pi}(1(T<\tau)) = E^{\Pi}(1-\pi_{T})
+    \end{equation}
+    The second equality follows from the definition of $\pi_{t}$.
+    Now we need to show
+    \begin{equation}
+        E^{\Pi}\left(T-\tau\right)^{+} = E^{\Pi}\left(\sum_{t=0}^{T-1}\pi_{t}\right)
+    \end{equation}
+    For any $t>0$,
+    \begin{eqnarray*}
+        E^{\Pi}\left(t-\tau \right)^{+} &=& \sum_{k=0}^{t}(t-k)P(\tau=k \mid \mathcal{I}_{t})\\
+        &=& \sum_{k=0}^{t-1} P(\tau \leq k \mid \mathcal{I}_{t})\\
+        &=& \sum_{k=0}^{t-1} \lbrack P(\tau \leq k \mid \mathcal{I}_{t})-P(\tau \leq k \mid \mathcal{I}_{k}) \rbrack +\sum_{k=0}^{t-1}P(\tau \leq k \mid \mathcal{I}_{k})\\
+        &=& \sum_{k=0}^{t-1} \lbrack P(\tau \leq k\mid\mathcal{I}_{t})-P(\tau \leq k\mid\mathcal{I}_{k}) \rbrack +\sum_{k=0}^{t-1}\pi_{k}
+    \end{eqnarray*}
+    Define
+    \begin{eqnarray*}
+        M_{t} &=& \sum_{k=0}^{t-1} \lbrack P(\tau \leq k \mid \mathcal{I}_{t})-P(\tau \leq k \mid \mathcal{I}_{k}) \rbrack\\
+        &=& -\sum_{k=0}^{t-1}\lbrack P(\tau > k \mid \mathcal{I}_{t}) - P(\tau > k \mid \mathcal{I}_{k})\rbrack
+    \end{eqnarray*}
+    We can show that $M_{t}$ is a regular martingale:
+    \begin{equation}
+        E^{\Pi}(M_{t+1} \mid \mathcal{I}_{t}) = M_{t}.
+    \end{equation}
+    Define
+    \begin{equation*}
+        M = \lim_{t\rightarrow \infty} \{\sum_{k=0}^{t-1} \lbrack P(\tau \leq k \mid \mathcal{I}_{t})-P(\tau \leq k \mid \mathcal{I}_{k}) \rbrack \}
+    \end{equation*}
+    \begin{equation*}
+        \abs{M} \leq \lim_{t\rightarrow \infty}  \sum_{k=0}^{\infty}\lbrack P(\tau > k \mid \mathcal{I}_{t}) +\sum_{k=0}^{\infty} P(\tau > k \mid \mathcal{I}_{k})\rbrack.
+    \end{equation*}
+    And also by assumption, we have
+    \begin{equation*}
+        E^{\Pi}\sum_{k=0}^{\infty}\lbrack P(\tau > k \mid \mathcal{I}_{t}) = \sum_{k=0}^{\infty}P(\tau>k) = E^{\Pi}(\tau)<\infty
+    \end{equation*}
+    and
+    \begin{equation*}
+        E^{\Pi}\sum_{k=0}^{\infty}P(\tau>k \mid \mathcal{I}_{k}) = E^{\Pi}(\tau)<\infty.
+    \end{equation*}
+    Hence, $M$ is integrable.
+    Now we want to show $M$ is regular.
+    \begin{eqnarray*}
+        E^{\Pi}(M\mid \mathcal{I}_{m}) &=& \sum_{k=0}^{\infty} E^{\Pi}\lbrack P(\tau \leq k \mid \mathcal{I}_{t})-P(\tau \leq k \mid \mathcal{I}_{k})\mid \mathcal{I}_{m} \rbrack\\
+        &=& \sum_{k=0}^{m-1} \lbrack P(\tau \leq k \mid \mathcal{I}_{m})-P(\tau \leq k \mid \mathcal{I}_{k}) \rbrack\\
+        &=& M_{m}
+    \end{eqnarray*}
+    The second equation follows since for any $m<k$, we have $I_{m} \subset I_{k}$ and the first term will be canceled by the second term in the equation due to iteration property of expectation. Hence $ {M_{t}} $ is regular. By optional sampling, it implies
+    \begin{equation}
+        E^{\Pi}(M_{T}) = E^{\Pi}(M_{0}) = 0.
+    \end{equation}
+    Then the Lemma follows.
+\end{proof}
+\newpage
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+text width=5em, text centered, rounded corners, minimum height=4em,font=\footnotesize]
+\tikzstyle{block2} = [rectangle, minimum width=7cm,text justified,text width=5cm, draw=black, fill=yellow!20, rounded corners, minimum height=1cm,font=\scriptsize]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+minimum height=4em]
+\tikzstyle{emptyblock} = [rectangle]
+\noindent
+\begin{figure}[H]
+    \centering
+    \caption{The Skeleton of Bayesian Sequential Probability Test}
+    %\hspace*{-135pt}
+    \begin{tikzpicture}[node distance = 2cm, auto]
+        \node [block2,xshift=-1cm](statProblem){Statement of Problem
+            \begin{equation*}
+                y_{t} = x_{t}'\beta_{t} + \varepsilon_{t}
+            \end{equation*}
+            \begin{equation*}
+                \varepsilon_{t} \sim \begin{cases}
+                    \begin{array}{c}
+                        \mathcal{N}(0,\sigma^{2}) \\
+                        \mathcal{N}(\mu,\sigma^{2})
+                    \end{array} & \begin{array}{l}
+                        \text{for } t = 1,2,...,\tau -1 \\
+                        \text{for } t = \tau, \tau +1, ...
+                    \end{array}
+                \end{cases}
+            \end{equation*}
+        };
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \node[block2,below of=statProblem,text width=7cm,xshift=-4cm,yshift=-0.5cm](dectstat){The Detecting Statistics:};
+        \node[block2,below of=dectstat,text width=7cm,yshift=0cm](dectstat1){
+            Definition of detecting statistics:
+            \[ \pi_{t} = P(\tau \leq t \mid \mathcal{I}_{t}) \]
+        };
+
+        \node[block2,below of=dectstat1,text width=7cm,yshift=-0.5cm](updatePi){
+        The probability is updated with newly arrived data according to Bayesian theorem given parameter:
+        \[
+            \pi_{t,\theta} = \frac{\left(\rho(1-\pi_{t-1})+\pi_{t-1}\right)f_{1}(\hat{\varepsilon}_{t}\mid\theta)}{f(\hat{\varepsilon}_{t}\mid \theta)}
+        \]
+        };
+        \node[block2,below of=updatePi,text width=7cm,yshift=-0.5cm](updatePrior){
+            The prior distribution of parameter $\theta$ evolves:
+            \[
+                \Pi_{t}(\theta) = \frac{f\left( \hat{\varepsilon}_{t}\mid \theta \right)\Pi_{t-1}(\theta)}{\int f\left(\hat{\varepsilon}_{t}\mid \theta \right)d\Pi_{t-1}(\theta)}
+            \]
+        };
+        \node[block2,below of=updatePrior,text width=7cm,yshift=-0.5cm](Pi){
+            The detecting statistics becomes:
+            \[
+                \pi_{t} = \int_{\Theta} \pi_{t,\theta}d\Pi_{t}(\theta)
+            \]
+        };
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \node[block2,below of=statProblem,text width=7cm,xshift=4cm,yshift=-0.5cm](solution){The Sequential Stopping Procedure:};
+        \node[block2,below of=solution,text width=7cm,yshift=0cm](solution1){
+            The objective function:
+            \[
+                v(\pi,\Pi_{0}) = \inf_{T\in \mathbf{T} } E^{\Pi_{0}} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\}.
+            \]
+        };
+        \node[block2,below of=solution1,text width=7cm,yshift=-1.5cm](solution2){
+        The solution is a sequence of optimal stopping times:
+        \[
+            \mathcal{T}^{*} = \left\{ T_{1}^{*},T_{2}^{*},...,T_{t}^{*},...\right\}.
+        \]
+        At any time $t$,
+        \[
+            T_{t}^{*} = \arg \inf_{T\in \mathbf{T} } E^{\Pi_{t}} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\}.
+        \]
+        };
+        \node[block2,below of=solution2,text width=7cm,yshift=-1.5cm](solution3){
+            For any generic sequential problem with given $\Pi$:
+            \[
+                E^{\Pi} \left\{ 1\left(T< \tau \right)+c\left(T-\tau \right)^{+}\right\}= E^{\Pi}(1-\pi_{T}+c\sum_{i=0}^{T-1}\pi_{i})
+            \]
+
+        };
+        \node[block2,below of=solution3,text width=7cm, yshift=-1.5cm](solution4){
+
+            Then the value function given $\pi$ is
+            \[
+                v\left(\pi\right)=\min\left\{ 1-\pi,c\pi+\int_{\Theta} v\left(\pi'_{\theta}\mid \pi \right)d\Pi(\theta)\right\} ,
+            \]
+            %and the stopping time 
+            \[
+                T^{*}_{t}=\inf\{ t\geq 0 \mid r\left(\pi_{t}\right)=\left(1-\pi_{t}\right) \}
+            \]
+            \[
+                T^{*}_{t} = \inf\{t\geq0 \mid \pi_{t}\geq\pi^{*}\}
+            \]
+        };
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        \node[block2,below of=Pi,text width=7cm,yshift=-1cm](solution5){
+        For any time $t$, the optimal stopping time is
+        \[
+            T^{*}_{t} = \inf\{t\geq0 \mid \pi_{t}\geq\pi^{*}\},
+        \]
+        and the sequential stopping procedure is
+        \[
+            \mathcal{T}^{*} = \left\{ T_{1}^{*},T_{2}^{*},...,T_{t}^{*},...\right\}.
+        \]
+        };
+
+        % edges
+        \path [line] (statProblem) -| (dectstat);
+        \path[line](dectstat) -- (dectstat1);
+        \path [line] (dectstat1) -- (updatePi);
+        \path [line] (updatePi) -- (updatePrior);
+        \path [line] (updatePrior) -- (Pi);
+        \path [line] (statProblem) -| (solution);
+        \path[line](solution) -- (solution1);
+        \path [line] (solution1) -- (solution2);
+        \path [line] (solution2) -- (solution3);
+        \path [line] (solution3) -- (solution4);
+        \path[line](solution4) -- (solution5);
+        \path[line](Pi) -- (solution5);
+        %\path [line] (assess) -| (blood);
+        %\path [line] (blood) -- (metabolomics);
+        %\path [line] (blood) |- ([xshift = -2.3cm, yshift = 1cm]metabolomics.north west) -- (genetics);
+    \end{tikzpicture}
+    \label{fig:the BST flowchart}
+\end{figure}
+\bibliographystyle{elsarticle-harv}
+\bibliography{BST.bib}
+\end{document}

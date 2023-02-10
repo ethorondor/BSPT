@@ -1,0 +1,58 @@
+boundary.efp           package:strucchange           R Documentation
+
+_B_o_u_n_d_a_r_y _f_o_r _E_m_p_i_r_i_c_a_l _F_l_u_c_t_u_a_t_i_o_n _P_r_o_c_e_s_s_e_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Computes boundary for an object of class '"efp"'
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'efp':
+     boundary(x, alpha = 0.05, alt.boundary = FALSE,
+        functional = "max", ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       x: an object of class '"efp"'.
+
+   alpha: numeric from interval (0,1) indicating the confidence level
+          for which the boundary of the corresponding test will be
+          computed.
+
+alt.boundary: logical. If set to 'TRUE' alternative boundaries (instead
+          of the standard linear boundaries) will be computed (for
+          Brownian bridge type processes only).
+
+functional: indicates which functional should be applied to the
+          empirical fluctuation process. See also 'plot.efp'.
+
+     ...: currently not used.
+
+_V_a_l_u_e:
+
+     an object of class '"ts"' with the same time properties as the
+     process in 'x'
+
+_S_e_e _A_l_s_o:
+
+     'efp', 'plot.efp'
+
+_E_x_a_m_p_l_e_s:
+
+     ## Load dataset "nhtemp" with average yearly temperatures in New Haven
+     data(nhtemp)
+     ## plot the data
+     plot(nhtemp)
+
+     ## test the model null hypothesis that the average temperature remains constant
+     ## over the years
+     ## compute OLS-CUSUM fluctuation process
+     temp.cus <- efp(nhtemp ~ 1, type = "OLS-CUSUM")
+     ## plot the process without boundaries
+     plot(temp.cus, alpha = 0.01, boundary = FALSE)
+     ## add the boundaries in another colour
+     bound <- boundary(temp.cus, alpha = 0.01)
+     lines(bound, col=4)
+     lines(-bound, col=4)
+

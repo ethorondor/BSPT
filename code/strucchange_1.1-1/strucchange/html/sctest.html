@@ -1,0 +1,140 @@
+<html><head><title>R: Structural Change Tests</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for sctest.formula {strucchange}"><tr><td>sctest.formula {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Structural Change Tests</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Performs tests for structural change.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'formula':
+sctest(formula, type = &lt;&lt;see below&gt;&gt;, h = 0.15,
+    alt.boundary = FALSE, functional = c("max", "range",
+    "maxL2", "meanL2"), from = 0.15, to = NULL, point = 0.5,
+    asymptotic = FALSE, data, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+a formula describing the model to be tested.</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+a character string specifying the structural change test that ist
+to be performed. Besides the tests types described in <code><a href="efp.html">efp</a></code>
+and <code><a href="sctest.Fstats.html">sctest.Fstats</a></code>. The Chow test and the Nyblom-Hansen test
+can be performed by setting type to <code>"Chow"</code> or <code>"Nyblom-Hansen"</code>,
+respectively.</td></tr>
+<tr valign="top"><td><code>h</code></td>
+<td>
+numeric from interval (0,1) specifying the bandwidth. Determins the
+size of the data window relative to sample size (for MOSUM and ME tests
+only).</td></tr>
+<tr valign="top"><td><code>alt.boundary</code></td>
+<td>
+logical. If set to <code>TRUE</code> alternative boundaries
+(instead of the standard linear boundaries) will be used (for CUSUM
+processes only).</td></tr>
+<tr valign="top"><td><code>functional</code></td>
+<td>
+indicates which functional should be used to aggregate
+the empirical fluctuation processes to a test statistic.</td></tr>
+<tr valign="top"><td><code>from, to</code></td>
+<td>
+numerics. If <code>from</code> is smaller than 1 they are
+interpreted as percentages of data and by default <code>to</code> is taken to be
+the 1 - <code>from</code>. F statistics will be calculated for the observations
+<code>(n*from):(n*to)</code>, when <code>n</code> is the number of observations in the
+model. If <code>from</code> is greater than 1 it is interpreted to be the index
+and <code>to</code> defaults to <code>n - from</code>. (for F tests only)</td></tr>
+<tr valign="top"><td><code>point</code></td>
+<td>
+parameter of the Chow test for the potential change point.
+Interpreted analogous to the <code>from</code> parameter. By
+default taken to be <code>floor(n*0.5)</code> if <code>n</code> is the  number of
+observations in the model.</td></tr>
+<tr valign="top"><td><code>asymptotic</code></td>
+<td>
+logical. If <code>TRUE</code> the asymptotic (chi-square)
+distribution instead of the exact (F) distribution will be used to compute
+the p value (for Chow test only).</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+an optional data frame containing the variables in the model. By
+default the variables are taken from the environment which
+<code>sctest</code> is called from.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+further arguments passed to <code><a href="efp.html">efp</a></code> or
+<code><a href="Fstats.html">Fstats</a></code>.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+<code>sctest.formula</code> is mainly a wrapper for <code><a href="sctest.efp.html">sctest.efp</a></code>
+and <code><a href="sctest.Fstats.html">sctest.Fstats</a></code> as it fits an empirical fluctuation process
+first or computes the F statistics respectively and subsequently performs the
+corresponding test. The Chow test and the Nyblom-Hansen test are available explicitely here.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+an object of class <code>"htest"</code> containing:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>statistic</code></td>
+<td>
+the test statistic</td></tr>
+<tr valign="top"><td><code>p.value</code></td>
+<td>
+the corresponding p value</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+a character string with the method used</td></tr>
+<tr valign="top"><td><code>data.name</code></td>
+<td>
+a character string with the data name</td></tr>
+</table>
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="sctest.efp.html">sctest.efp</a></code>, <code><a href="sctest.Fstats.html">sctest.Fstats</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Load dataset "nhtemp" with average yearly temperatures in New Haven
+data(nhtemp)
+## plot the data
+plot(nhtemp)
+
+## test the model null hypothesis that the average temperature remains
+## constant over the years with the Standard CUSUM test
+sctest(nhtemp ~ 1)
+## with the Chow test (under the alternative that there is a change 1941)
+sctest(nhtemp ~ 1, type = "Chow", point = c(1941,1))
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

@@ -1,0 +1,29 @@
+root.matrix           package:strucchange           R Documentation
+
+_R_o_o_t _o_f _a _M_a_t_r_i_x
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Computes the root of a symmetric and positive semidefinite matrix.
+
+_U_s_a_g_e:
+
+     root.matrix(X)
+     solve.pd(X)
+
+_A_r_g_u_m_e_n_t_s:
+
+       X: a symmetric and positive semidefinite matrix
+
+_V_a_l_u_e:
+
+     a symmetric matrix of same dimensions as 'X'
+
+_E_x_a_m_p_l_e_s:
+
+     X <- matrix(c(1,2,2,8), ncol=2)
+     test <- root.matrix(X)
+     ## control results
+     X
+     test %*% test
+

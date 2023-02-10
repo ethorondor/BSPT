@@ -1,0 +1,81 @@
+\Header{confint.breakpointsfull}{Confidence Intervals for Breakpoints}
+\alias{lines.confint.breakpoints}{confint.breakpointsfull}
+\alias{print.confint.breakpoints}{confint.breakpointsfull}
+\keyword{regression}{confint.breakpointsfull}
+\begin{Description}\relax
+Computes confidence intervals for breakpoints.\end{Description}
+\begin{Usage}
+\begin{verbatim}
+## S3 method for class 'breakpointsfull':
+confint(object, parm = NULL, level = 0.95,
+    breaks = NULL, het.reg = TRUE, het.err = TRUE, ...)
+## S3 method for class 'confint.breakpoints':
+lines(x, col = 2, angle = 90, length = 0.05,
+    code = 3, at = NULL, breakpoints = TRUE, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{object}] an object of class \code{"breakpointsfull"} as computed by
+\code{\Link{breakpoints}} from a \code{formula}.
+\item[\code{parm}] the same as \code{breaks}, only one of the two should be
+specified.
+\item[\code{level}] the confidence level required.
+\item[\code{breaks}] an integer specifying the number of breaks to be used.
+By default the breaks of the minimum BIC partition are used.
+\item[\code{het.reg}] logical. Should heterogenous regressors be assumed? If set
+to \code{FALSE} the distribution of the regressors is assumed to be
+homogenous over the segments.
+\item[\code{het.err}] logical. Should heterogenous errors be assumed? If set
+to \code{FALSE} the distribution of the errors is assumed to be
+homogenous over the segments.
+\item[\code{x}] an object of class \code{"confint.breakpoints"} as returned by
+\code{confint}.
+\item[\code{col, angle, length, code}] arguments passed to \code{\Link{arrows}}.
+\item[\code{at}] position on the y axis, where the confidence arrows should be
+drawn. By default they are drawn at the bottom of the plot.
+\item[\code{breakpoints}] logical. If \code{TRUE} vertical lines for the breakpoints
+are drawn.
+\item[\code{...}] \emph{currently not used}.
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+As the breakpoints are integers (observation numbers) the corresponding
+confidence intervals are also rounded to integers.
+
+The distribution function used for the computation of confidence
+intervals of breakpoints is given in Bai (1997). The procedure, in
+particular the usage of heterogenous regressors and/or errors, is
+described in more detail in Bai \& Perron (2003).
+
+The breakpoints should be computed from a formula with \code{breakpoints},
+then the confidence intervals for the breakpoints can be derived by
+\code{confint} and these can be visualized by \code{lines}. For an
+example see below.\end{Details}
+\begin{Value}
+A matrix containing the breakpoints and their lower and upper
+confidence boundary for the given level.\end{Value}
+\begin{References}\relax
+Bai J. (1997), Estimation of a Change Point in Multiple Regression Models,
+\emph{Review of Economics and Statistics}, \bold{79}, 551-563.
+
+Bai J., Perron P. (2003), Computation and Analysis of Multiple Structural Change
+Models, \emph{Journal of Applied Econometrics}, \bold{18}, 1-22.\end{References}
+\begin{SeeAlso}\relax
+\code{\Link{breakpoints}}\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+require(ts)
+
+## Nile data with one breakpoint: the annual flows drop in 1898
+## because the first Ashwan dam was built
+data(Nile)
+plot(Nile)
+
+## dating breaks
+bp.nile <- breakpoints(Nile ~ 1)
+ci.nile <- confint(bp.nile, breaks = 1)
+lines(ci.nile)
+\end{ExampleCode}
+\end{Examples}
+

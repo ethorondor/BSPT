@@ -1,0 +1,8 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.venvFolders": [
+        "/home/elrond/anaconda3/envs"
+    ],
+    "python.pythonPath": "/home/elrond/anaconda3/bin/python"
+}

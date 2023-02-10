@@ -1,0 +1,104 @@
+<html><head><title>R: US Labor Productivity</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for durab {strucchange}"><tr><td>durab {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>US Labor Productivity</h2>
+
+
+<h3>Description</h3>
+
+<p>
+US labor productivity in the manufacturing/durables sector.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(durab)</pre>
+
+
+<h3>Format</h3>
+
+<p>
+<code>durab</code> is a multivariate monthly time series from 1947(3)
+to 2001(4) with variables
+<dl>
+<dt>y</dt><dd>growth rate of the Industrial Production Index to
+average weekly labor hours in the manufacturing/durables sector,</dd>
+<dt>lag</dt><dd>lag 1 of the series <code>y</code>,</dd>
+</dl>
+
+<h3>Source</h3>
+
+<p>
+The data set is available from Bruce Hansen's homepage
+<a href="http://www.ssc.wisc.edu/~bhansen/">http://www.ssc.wisc.edu/~bhansen/</a>. For more information
+see Hansen (2001).
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Hansen B. (2001), The New Econometrics of Structural Change:
+Dating Breaks in U.S. Labor Productivity,
+<EM>Journal of Economic Perspectives</EM>, <B>15</B>, 117-128.
+</p>
+<p>
+Zeileis A., Leisch F., Kleiber C., Hornik K. (2002), Monitoring
+Structural Change in Dynamic Econometric Models,
+Report 64, SFB "Adaptive Information Systems and Modelling in Economics
+and Management Science", Vienna University of Economics,
+<a href="http://www.wu-wien.ac.at/am/reports.htm#78">http://www.wu-wien.ac.at/am/reports.htm#78</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(durab)
+## use AR(1) model as in Hansen (2001) and Zeileis et al. (2002)
+durab.model &lt;- y ~ lag
+
+## historical tests
+## OLS-based CUSUM process
+ols &lt;- efp(durab.model, data = durab, type = "OLS-CUSUM")
+plot(ols)
+## F statistics
+fs &lt;- Fstats(durab.model, data = durab, from = 0.1)
+plot(fs)
+## F statistics based on heteroskadisticy-consistent covariance matrix
+fsHC &lt;- Fstats(durab.model, data = durab, from = 0.1, cov.type = "HC")
+plot(fsHC)
+
+## monitoring
+Durab &lt;- window(durab, start=1964, end = c(1979, 12))
+ols.efp &lt;- efp(durab.model, type = "OLS-CUSUM", data = Durab)
+newborder &lt;- function(k) 1.5778*k/192
+ols.mefp &lt;- mefp(ols.efp, period=2)
+ols.mefp2 &lt;- mefp(ols.efp, border=newborder)
+Durab &lt;- window(durab, start=1964)
+ols.mon &lt;- monitor(ols.mefp)
+ols.mon2 &lt;- monitor(ols.mefp2)
+plot(ols.mon)
+lines(boundary(ols.mon2), col = 2)
+
+## dating
+bp &lt;- breakpoints(durab.model, data = durab)
+summary(bp)
+plot(summary(bp))
+
+plot(ols)
+lines(breakpoints(bp, breaks = 1), col = 3)
+lines(breakpoints(bp, breaks = 2), col = 4)
+plot(fs)
+lines(breakpoints(bp, breaks = 1), col = 3)
+lines(breakpoints(bp, breaks = 2), col = 4)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

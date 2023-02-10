@@ -1,0 +1,81 @@
+\Header{sctest.formula}{Structural Change Tests}
+\alias{sctest}{sctest.formula}
+\keyword{htest}{sctest.formula}
+\begin{Description}\relax
+Performs tests for structural change.\end{Description}
+\begin{Usage}
+\begin{verbatim}
+## S3 method for class 'formula':
+sctest(formula, type = <<see below>>, h = 0.15,
+    alt.boundary = FALSE, functional = c("max", "range",
+    "maxL2", "meanL2"), from = 0.15, to = NULL, point = 0.5,
+    asymptotic = FALSE, data, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{formula}] a formula describing the model to be tested.
+\item[\code{type}] a character string specifying the structural change test that ist
+to be performed. Besides the tests types described in \code{\Link{efp}}
+and \code{\Link{sctest.Fstats}}. The Chow test and the Nyblom-Hansen test
+can be performed by setting type to \code{"Chow"} or \code{"Nyblom-Hansen"},
+respectively.
+\item[\code{h}] numeric from interval (0,1) specifying the bandwidth. Determins the
+size of the data window relative to sample size (for MOSUM and ME tests
+only).
+\item[\code{alt.boundary}] logical. If set to \code{TRUE} alternative boundaries
+(instead of the standard linear boundaries) will be used (for CUSUM
+processes only).
+\item[\code{functional}] indicates which functional should be used to aggregate
+the empirical fluctuation processes to a test statistic.
+\item[\code{from, to}] numerics. If \code{from} is smaller than 1 they are
+interpreted as percentages of data and by default \code{to} is taken to be
+the 1 - \code{from}. F statistics will be calculated for the observations
+\code{(n*from):(n*to)}, when \code{n} is the number of observations in the
+model. If \code{from} is greater than 1 it is interpreted to be the index
+and \code{to} defaults to \code{n - from}. (for F tests only)
+\item[\code{point}] parameter of the Chow test for the potential change point.
+Interpreted analogous to the \code{from} parameter. By
+default taken to be \code{floor(n*0.5)} if \code{n} is the  number of
+observations in the model.
+\item[\code{asymptotic}] logical. If \code{TRUE} the asymptotic (chi-square)
+distribution instead of the exact (F) distribution will be used to compute
+the p value (for Chow test only).
+\item[\code{data}] an optional data frame containing the variables in the model. By
+default the variables are taken from the environment which
+\code{sctest} is called from.
+\item[\code{...}] further arguments passed to \code{\Link{efp}} or
+\code{\Link{Fstats}}.
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+\code{sctest.formula} is mainly a wrapper for \code{\Link{sctest.efp}}
+and \code{\Link{sctest.Fstats}} as it fits an empirical fluctuation process
+first or computes the F statistics respectively and subsequently performs the
+corresponding test. The Chow test and the Nyblom-Hansen test are available explicitely here.\end{Details}
+\begin{Value}
+an object of class \code{"htest"} containing:
+\begin{ldescription}
+\item[\code{statistic}] the test statistic
+\item[\code{p.value}] the corresponding p value
+\item[\code{method}] a character string with the method used
+\item[\code{data.name}] a character string with the data name
+\end{ldescription}
+\end{Value}
+\begin{SeeAlso}\relax
+\code{\Link{sctest.efp}}, \code{\Link{sctest.Fstats}}\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+## Load dataset "nhtemp" with average yearly temperatures in New Haven
+data(nhtemp)
+## plot the data
+plot(nhtemp)
+
+## test the model null hypothesis that the average temperature remains
+## constant over the years with the Standard CUSUM test
+sctest(nhtemp ~ 1)
+## with the Chow test (under the alternative that there is a change 1941)
+sctest(nhtemp ~ 1, type = "Chow", point = c(1941,1))
+\end{ExampleCode}
+\end{Examples}
+

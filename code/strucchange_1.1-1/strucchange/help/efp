@@ -1,0 +1,175 @@
+efp               package:strucchange               R Documentation
+
+_E_m_p_i_r_i_c_a_l _F_l_u_c_t_u_a_t_i_o_n _P_r_o_c_e_s_s_e_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Computes an empirical fluctuation process according to a specified
+     method from the generalized fluctuation test framework, which
+     includes CUSUM and MOSUM tests based on recursive or OLS
+     residuals, parameter estimates or ML scores (OLS first order
+     conditions).
+
+_U_s_a_g_e:
+
+     efp(formula, data, type = <<see below>>, h = 0.15,
+         dynamic = FALSE, rescale = TRUE)
+
+_A_r_g_u_m_e_n_t_s:
+
+ formula: a symbolic description for the model to be tested.
+
+    data: an optional data frame containing the variables in the model.
+          By default the variables are taken from the environment which
+          'efp' is called from.
+
+    type: specifies which type of fluctuation process will be computed.
+          For details see below.
+
+       h: a numeric from interval (0,1) sepcifying the bandwidth.
+          determins the size of the data window relative to sample size
+          (for MOSUM and ME processes only).
+
+ dynamic: logical. If 'TRUE' the lagged observations are included as a
+          regressor.
+
+ rescale: logical. If 'TRUE' the estimates will be standardized by the
+          regressor matrix of the corresponding subsample according to
+          Kuan & Chen (1994); if 'FALSE' the whole regressor matrix
+          will be used. (only if 'type' is either '"RE"' or '"ME"')
+
+_D_e_t_a_i_l_s:
+
+     If 'type' is one of '"Rec-CUSUM"', '"OLS-CUSUM"', '"Rec-MOSUM"' or
+     '"OLS-MOSUM"' the function 'efp' will return a one-dimensional
+     empiricial process of sums of residuals. Either it will be based
+     on recursive residuals or on OLS residuals and the process will
+     contain CUmulative SUMs or MOving SUMs of residuals in a certain
+     data window. For the MOSUM and ME processes all estimations are
+     done for the observations in a moving data window, whose size is
+     determined by 'h' and which is shifted over the whole sample.
+
+     If 'type' is either '"RE"' or '"ME"' a _k_-dimensional process
+     will be returned, if _k_ is the number of regressors in the model,
+     as it is based on recursive OLS estimates of the regression
+     coefficients or moving OLS estimates respectively. The recursive
+     estimates test is also called fluctuation test, therefore setting
+     'type' to '"fluctuation"' was used to specify it in earlier
+     versions of strucchange. It still can be used now, but will be
+     forced to '"RE"'.
+
+     If 'type' is '"Score-CUSUM"' or '"Score-MOSUM"' a
+     _k+1_-dimensional process will be returned, one for each score of
+     the regression coefficients and one for the scores of the
+     variance. The process gives the decorrelated cumulative sums of
+     the ML scores (in a gaussian model) or first order conditions
+     respectively (in an OLS framework).
+
+     If there is a single structural change point t^*, the recursive
+     CUSUM path starts to depart from its mean 0 at t^*. The Brownian
+     bridge type paths will have their respective peaks around t^*. The
+     Brownian bridge increments type paths should have a strong change
+     at t^*.
+
+     The function 'plot' has a method to plot the empirical fluctuation
+     process; with 'sctest' the corresponding test on structural change
+     can be performed.
+
+_V_a_l_u_e:
+
+     'efp' returns a list of class '"efp"' with components inlcuding 
+
+ process: the fitted empirical fluctuation process of class '"ts"' or
+          '"mts"' respectively,
+
+    type: a string with the 'type' of the process fitted,
+
+    nreg: the number of regressors,
+
+    nobs: the number of observations,
+
+     par: the bandwidth 'h' used.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Brown R.L., Durbin J., Evans J.M. (1975), Techniques for testing
+     constancy of regression relationships over time, _Journal of the
+     Royal Statistal Society_, B, *37*, 149-163.
+
+     Chu C.-S., Hornik K., Kuan C.-M. (1995), MOSUM tests for parameter
+     constancy, _Biometrika_, *82*, 603-617.
+
+     Chu C.-S., Hornik K., Kuan C.-M. (1995), The moving-estimates test
+     for parameter stability, _Econometric Theory_, *11*, 669-720.
+
+     Hansen B. (1992), Testing for Parameter Instability in Linear
+     Models, _Journal of Policy Modeling_, *14*, 517-533.
+
+     Hjort N.L., Koning A. (2002), Tests for Constancy of Model
+     Parameters Over Time, _Nonparametric Statistics_, *14*, 113-132.
+
+     Krämer W., Ploberger W., Alt R. (1988), Testing for structural
+     change in dynamic models, _Econometrica_, *56*, 1355-1369.
+
+     Kuan C.-M., Hornik K. (1995), The generalized fluctuation test: A
+     unifying view, _Econometric Reviews_, *14*, 135 - 161.
+
+     Kuan C.-M., Chen (1994), Implementing the fluctuation and moving
+     estimates tests in dynamic econometric models, _Economics
+     Letters_, *44*, 235-239.
+
+     Ploberger W., Krämer W. (1992), The CUSUM test with OLS residuals,
+     _Econometrica_, *60*, 271-285.
+
+     Zeileis A., Leisch F., Hornik K., Kleiber C. (2002),
+     'strucchange': An R Package for Testing for Structural Change in
+     Linear Regression Models, _Journal of Statistical Software_,
+     *7*(2), 1-38.
+
+     Zeileis A., Hornik K. (2003), Generalized M-Fluctuation Tests for
+     Parameter Instability, Report 80, SFB "Adaptive Information
+     Systems and Modelling in Economics and Management Science", Vienna
+     University of Economics, <URL:
+     http://www.wu-wien.ac.at/am/reports.htm#80>.
+
+_S_e_e _A_l_s_o:
+
+     'plot.efp', 'print.efp', 'sctest.efp', 'boundary.efp'
+
+_E_x_a_m_p_l_e_s:
+
+     require(ts)
+
+     ## Nile data with one breakpoint: the annual flows drop in 1898
+     ## because the first Ashwan dam was built
+     data(Nile)
+     plot(Nile)
+
+     ## test the null hypothesis that the annual flow remains constant
+     ## over the years
+     ## compute OLS-based CUSUM process and plot
+     ## with standard and alternative boundaries
+     ocus.nile <- efp(Nile ~ 1, type = "OLS-CUSUM")
+     plot(ocus.nile)
+     plot(ocus.nile, alpha = 0.01, alt.boundary = TRUE)
+     ## calculate corresponding test statistic
+     sctest(ocus.nile)
+
+     ## UK Seatbelt data: a SARIMA(1,0,0)(1,0,0)_12 model
+     ## (fitted by OLS) is used and reveals (at least) two
+     ## breakpoints - one in 1973 associated with the oil crisis and
+     ## one in 1983 due to the introduction of compulsory
+     ## wearing of seatbelts in the UK.
+     data(UKDriverDeaths)
+     seatbelt <- log10(UKDriverDeaths)
+     seatbelt <- cbind(seatbelt, lag(seatbelt, k = -1), lag(seatbelt, k = -12))
+     colnames(seatbelt) <- c("y", "ylag1", "ylag12")
+     seatbelt <- window(seatbelt, start = c(1970, 1), end = c(1984,12))
+     plot(seatbelt[,"y"], ylab = expression(log[10](casualties)))
+
+     ## use RE process
+     re.seat <- efp(y ~ ylag1 + ylag12, data = seatbelt, type = "RE")
+     plot(re.seat)
+     plot(re.seat, functional = NULL)
+     sctest(re.seat)
+

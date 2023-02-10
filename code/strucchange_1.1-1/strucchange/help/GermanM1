@@ -1,0 +1,121 @@
+GermanM1             package:strucchange             R Documentation
+
+_G_e_r_m_a_n _M_1 _M_o_n_e_y _D_e_m_a_n_d
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     German M1 money demand.
+
+_U_s_a_g_e:
+
+     data(GermanM1)
+
+_F_o_r_m_a_t:
+
+     'GermanM1' is a data frame containing 12 quarterly time series
+     from 1961(1) to 1995(4) and two further variables. 'historyM1' is
+     the subset of 'GermanM1' up to 1990(2), i.e., the data before the
+     German monetary unification on 1990-06-01. 'monitorM1' is the
+     complement of 'historyM1', i.e., the data after the unification.
+     All three data frames contain the variables
+
+     _m time series. Logarithm of real M1 per capita,
+
+     _p time series. Logarithm of a price index,
+
+     _y time series. Logarithm of real per capita gross national
+          product,
+
+     _R time series. Long-run interest rate,
+
+     _d_m time series. First differences of 'm',
+
+     _d_y_2 time series. First differences of lag 2 of 'y',
+
+     _d_R time series. First differences of 'R',
+
+     _d_R_1 time series. First differences of lag 1 of 'R',
+
+     _d_p time series. First differences of 'p',
+
+     _m_1 time series. Lag 1 of 'm',
+
+     _y_1 time series. Lag 1 of 'y',
+
+     _R_1 time series. Lag 1 of 'R',
+
+     _s_e_a_s_o_n factor coding the seasonality,
+
+     _e_c_m._r_e_s vector containing the OLS residuals of the Lütkepohl et
+          al. (1999) model fitted in the history period.
+
+_D_e_t_a_i_l_s:
+
+     Lütkepohl et al. (1999) investigate the linearity and stability of
+     German M1 money demand: they find a stable regression relation for
+     the time before the monetary union on 1990-06-01 but a clear
+     structural instability afterwards.
+
+     Zeileis et al. (2002) use a model with 'ecm.res' instead of 'm1',
+     'y1' and 'R1', which leads to equivalent results in the history
+     period but slightly different results in the monitoring period.
+     The reason for the replacement is that stationary regressors are
+     needed for the structural change tests. See references and the
+     examples below for more details.
+
+_S_o_u_r_c_e:
+
+     The data is provided by the German central bank and is available
+     online in the data archive of the Journal of Applied Econometrics
+     <URL:
+     http://qed.econ.queensu.ca/jae/1999-v14.5/lutkepohl-terasvirta-wol
+     ters/>.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Lütkepohl H., Teräsvirta T., Wolters J. (1999), Investigating
+     Stability and Linearity of a German M1 Money Demand Function,
+     _Journal of Applied Econometrics_, *14*, 511-525.
+
+     Zeileis A., Leisch F., Kleiber C., Hornik K. (2002), Monitoring
+     Structural Change in Dynamic Econometric Models, Report 64, SFB
+     "Adaptive Information Systems and Modelling in Economics and
+     Management Science", Vienna University of Economics, <URL:
+     http://www.wu-wien.ac.at/am/reports.htm#78>.
+
+_E_x_a_m_p_l_e_s:
+
+     data(GermanM1)
+     ## Lütkepohl et al. (1999) use the following model
+     LTW.model <- dm ~ dy2 + dR + dR1 + dp + m1 + y1 + R1 + season
+     ## Zeileis et al. (2002) use
+     M1.model <- dm ~ dy2 + dR + dR1 + dp + ecm.res + season
+
+     ## historical tests
+     ols <- efp(LTW.model, data = GermanM1, type = "OLS-CUSUM")
+     plot(ols)
+     re <- efp(LTW.model, data = GermanM1, type = "fluctuation")
+     plot(re)
+     fs <- Fstats(LTW.model, data = GermanM1, from = 0.1)
+     plot(fs)
+
+     ## monitoring
+     M1 <- historyM1
+     ols.efp <- efp(M1.model, type = "OLS-CUSUM", data = M1)
+     newborder <- function(k) 1.5778*k/118
+     ols.mefp <- mefp(ols.efp, period = 2)
+     ols.mefp2 <- mefp(ols.efp, border = newborder)
+     M1 <- GermanM1
+     ols.mon <- monitor(ols.mefp)
+     ols.mon2 <- monitor(ols.mefp2)
+     plot(ols.mon)
+     lines(boundary(ols.mon2), col = 2)
+
+     ## dating
+     bp <- breakpoints(LTW.model, data = GermanM1)
+     summary(bp)
+     plot(bp)
+
+     plot(fs)
+     lines(confint(bp))
+

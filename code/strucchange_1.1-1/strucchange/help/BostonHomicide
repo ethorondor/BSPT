@@ -1,0 +1,59 @@
+BostonHomicide          package:strucchange          R Documentation
+
+_Y_o_u_t_h _H_o_m_i_c_i_d_e_s _i_n _B_o_s_t_o_n
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Data about the number of youth homicides in Boston during the
+     `Boston Gun Project'-a policing initiative aiming at lowering
+     homicide victimization among young people in Boston.
+
+_U_s_a_g_e:
+
+     data(BostonHomicide)
+
+_F_o_r_m_a_t:
+
+     A data frame containing 2 monthly time series and a factor coding
+     seasonality.
+
+     _h_o_m_i_c_i_d_e_s time series. Number of youth homicides,
+
+     _p_o_p_u_l_a_t_i_o_n time series. Boston population (aged 25-44), linearly
+          interpolated from annual data.
+
+     _s_e_a_s_o_n factor coding the month.
+
+_D_e_t_a_i_l_s:
+
+     The `Boston Gun Project' is a policing initiative aiming at
+     lowering youth homicides in Boston. The project began in early
+     1995 and implemented the so-called `Operation Ceasefire'
+     intervention which began in the late spring of 1996.
+
+     More information is available at:
+
+     <URL: http://www.ksg.harvard.edu/criminaljustice/research/bgp.htm>
+
+_S_o_u_r_c_e:
+
+     Cooper et al. (2001), Figure 1 and Table I.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Cooper S.J., Piehl A.M., Braga A.A., Kennedy D.M. (2001), Testing
+     for Structural Breaks in the Evaluation of Programs, Unpublished
+     Paper, John F. Kennedy School of Government.
+
+     Kennedy D.M., Piehl A.M., Braga A.A. (1996), Youth Violence in
+     Boston: Gun Markets, Serious Youth Offenders, and a Use-Reduction
+     Strategy, _Law and Contemporary Problems_, *59*, 147-183.
+
+_E_x_a_m_p_l_e_s:
+
+     data(BostonHomicide)
+
+     fm <- glm(homicides ~ population + season, data = BostonHomicide,
+               family = poisson)
+     anova(fm, test = "F")
+

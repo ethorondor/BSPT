@@ -1,0 +1,91 @@
+sctest.Fstats          package:strucchange          R Documentation
+
+_s_u_p_F-, _a_v_e_F- _a_n_d _e_x_p_F-_T_e_s_t
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Performs the supF-, aveF- or expF-test
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'Fstats':
+     sctest(x, type = c("supF", "aveF", "expF"),
+         asymptotic = FALSE, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       x: an object of class '"Fstats"'.
+
+    type: a character string specifying which test will be performed.
+
+asymptotic: logical. Only necessary if 'x' contains just a single F
+          statistic and type is '"supF"' or '"aveF"'. If then set to
+          'TRUE' the asymptotic (chi-square) distribution instead of
+          the exact (F) distribution will be used to compute the p
+          value.
+
+     ...: currently not used.
+
+_D_e_t_a_i_l_s:
+
+     If 'x' contains just a single F statistic and type is '"supF"' or
+     '"aveF"' the Chow test will be performed.
+
+     The original GAUSS code for computing the p values of the supF-,
+     aveF- and expF-test was written by Bruce Hansen and is available
+     from <URL: http://www.ssc.wisc.edu/~bhansen/>. R port by Achim
+     Zeileis.
+
+_V_a_l_u_e:
+
+     an object of class '"htest"' containing: 
+
+statistic: the test statistic
+
+ p.value: the corresponding p value
+
+  method: a character string with the method used
+
+data.name: a character string with the data name
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Andrews D.W.K. (1993), Tests for parameter instability and
+     structural change with unknown change point, _Econometrica_, *61*,
+     821-856.
+
+     Andrews D.W.K., Ploberger W. (1994), Optimal tests when a nuisance
+     parameter is present only under the alternative, _Econometrica_,
+     *62*, 1383-1414.
+
+     Hansen B. (1992), Tests for parameter instability in regressions
+     with I(1) processes, _Journal of Business & Economic Statistics_,
+     *10*, 321-335.
+
+     Hansen B. (1997), Approximate asymptotic p values for
+     structural-change tests, _Journal of Business & Economic
+     Statistics_, *15*, 60-67.
+
+_S_e_e _A_l_s_o:
+
+     'Fstats', 'plot.Fstats'
+
+_E_x_a_m_p_l_e_s:
+
+     ## Load dataset "nhtemp" with average yearly temperatures in New Haven
+     data(nhtemp)
+     ## plot the data
+     plot(nhtemp)
+
+     ## test the model null hypothesis that the average temperature remains
+     ## constant over the years for potential break points between 1941
+     ## (corresponds to from = 0.5) and 1962 (corresponds to to = 0.85)
+     ## compute F statistics
+     fs <- Fstats(nhtemp ~ 1, from = 0.5, to = 0.85)
+     ## plot the F statistics
+     plot(fs, alpha = 0.01)
+     ## and the corresponding p values
+     plot(fs, pval = TRUE, alpha = 0.01)
+     ## perform the aveF test
+     sctest(fs, type = "aveF")
+

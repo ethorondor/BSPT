@@ -1,0 +1,46 @@
+\Header{BostonHomicide}{Youth Homicides in Boston}
+\keyword{datasets}{BostonHomicide}
+\begin{Description}\relax
+Data about the number of youth homicides in Boston during the
+`Boston Gun Project'---a policing initiative aiming at lowering
+homicide victimization among young people in Boston.\end{Description}
+\begin{Usage}
+\begin{verbatim}data(BostonHomicide)\end{verbatim}
+\end{Usage}
+\begin{Format}\relax
+A data frame containing 2 monthly time series
+and a factor coding seasonality.
+\describe{
+\item[homicides] time series. Number of youth homicides,
+\item[population] time series. Boston population (aged 25-44),
+linearly interpolated from annual data.
+\item[season] factor coding the month.
+}\end{Format}
+\begin{Details}\relax
+The `Boston Gun Project' is a policing initiative aiming at lowering
+youth homicides in Boston. The project began in early 1995 and implemented the
+so-called `Operation Ceasefire' intervention which began in the late spring of 1996.
+
+More information is available at:
+
+\url{http://www.ksg.harvard.edu/criminaljustice/research/bgp.htm}\end{Details}
+\begin{Source}\relax
+Cooper et al. (2001), Figure 1 and Table I.\end{Source}
+\begin{References}\relax
+Cooper S.J., Piehl A.M., Braga A.A., Kennedy D.M. (2001), Testing for Structural
+Breaks in the Evaluation of Programs, Unpublished Paper, John F. Kennedy School
+of Government.
+
+Kennedy D.M., Piehl A.M., Braga A.A. (1996), Youth Violence in Boston: Gun Markets,
+Serious Youth Offenders, and a Use-Reduction Strategy, \emph{Law and Contemporary Problems},
+\bold{59}, 147-183.\end{References}
+\begin{Examples}
+\begin{ExampleCode}
+data(BostonHomicide)
+
+fm <- glm(homicides ~ population + season, data = BostonHomicide,
+          family = poisson)
+anova(fm, test = "F")
+\end{ExampleCode}
+\end{Examples}
+

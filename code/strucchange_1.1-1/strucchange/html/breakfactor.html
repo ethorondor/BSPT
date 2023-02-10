@@ -1,0 +1,84 @@
+<html><head><title>R: Factor Coding of Segmentations</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for breakfactor {strucchange}"><tr><td>breakfactor {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Factor Coding of Segmentations</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Generates a factor encoding the segmentation given by
+a set of breakpoints.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+breakfactor(obj, breaks = NULL, labels = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+An object of class <code>"breakpoints"</code> or
+<code>"breakpointsfull"</code> respectively.</td></tr>
+<tr valign="top"><td><code>breaks</code></td>
+<td>
+an integer specifying the number of breaks
+to extract (only if <code>obj</code> is of class <code>"breakpointsfull"</code>),
+by default the minimum BIC partition is used.</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+a vector of labels for the returned factor,
+by default the segments are numbered starting from
+<code>"segment1"</code>.</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+further arguments passed to <code>factor</code>.</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+A factor encoding the segmentation.</p>
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="breakpoints.html">breakpoints</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+require(ts)
+
+## Nile data with one breakpoint: the annual flows drop in 1898
+## because the first Ashwan dam was built
+data(Nile)
+plot(Nile)
+
+## compute breakpoints
+bp.nile &lt;- breakpoints(Nile ~ 1)
+
+## fit and visualize segmented and unsegmented model
+fm0 &lt;- lm(Nile ~ 1)
+fm1 &lt;- lm(Nile ~ breakfactor(bp.nile, breaks = 1))
+
+lines(fitted(fm0), col = 3)
+lines(fitted(fm1), col = 4)
+lines(bp.nile, breaks = 1)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

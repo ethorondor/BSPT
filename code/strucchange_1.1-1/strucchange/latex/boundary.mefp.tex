@@ -1,0 +1,33 @@
+\Header{boundary.mefp}{Boundary Function for Monitoring of Structural Changes}
+\keyword{regression}{boundary.mefp}
+\begin{Description}\relax
+Computes boundary for an object of class \code{"mefp"}\end{Description}
+\begin{Usage}
+\begin{verbatim}
+## S3 method for class 'mefp':
+boundary(x, ...)\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] an object of class \code{"mefp"}.
+\item[\code{...}] currently not used.
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+an object of class \code{"ts"} with the same time properties as
+the monitored process\end{Value}
+\begin{SeeAlso}\relax
+\code{\Link{mefp}}, \code{\Link{plot.mefp}}\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+df1 <- data.frame(y=rnorm(300))
+df1[150:300,"y"] <- df1[150:300,"y"]+1
+me1 <- mefp(y~1, data=df1[1:50,,drop=FALSE], type="ME", h=1,
+              alpha=0.05)
+me2 <- monitor(me1, data=df1)
+
+plot(me2, boundary=FALSE)
+lines(boundary(me2), col="green", lty="44")
+\end{ExampleCode}
+\end{Examples}
+

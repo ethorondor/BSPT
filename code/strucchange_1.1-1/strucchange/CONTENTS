@@ -1,0 +1,161 @@
+Entry: BostonHomicide
+Aliases: BostonHomicide
+Keywords: datasets
+Description: Youth Homicides in Boston
+URL: ../../../library/strucchange/html/BostonHomicide.html
+
+Entry: Fstats
+Aliases: Fstats print.Fstats
+Keywords: regression
+Description: F Statistics
+URL: ../../../library/strucchange/html/Fstats.html
+
+Entry: GermanM1
+Aliases: GermanM1 historyM1 monitorM1
+Keywords: datasets
+Description: German M1 Money Demand
+URL: ../../../library/strucchange/html/GermanM1.html
+
+Entry: Grossarl
+Aliases: Grossarl
+Keywords: datasets
+Description: Marriages and Births in Grossarl
+URL: ../../../library/strucchange/html/Grossarl.html
+
+Entry: USIncExp
+Aliases: USIncExp
+Keywords: datasets
+Description: Income and Expenditures in the US
+URL: ../../../library/strucchange/html/USIncExp.html
+
+Entry: boundary.Fstats
+Aliases: boundary.Fstats
+Keywords: regression
+Description: Boundary for F Statistics
+URL: ../../../library/strucchange/html/boundary.Fstats.html
+
+Entry: boundary
+Aliases: boundary
+Keywords: regression
+Description: Boundary Function for Structural Change Tests
+URL: ../../../library/strucchange/html/boundary.html
+
+Entry: boundary.efp
+Aliases: boundary.efp
+Keywords: regression
+Description: Boundary for Empirical Fluctuation Processes
+URL: ../../../library/strucchange/html/boundary.efp.html
+
+Entry: boundary.mefp
+Aliases: boundary.mefp
+Keywords: regression
+Description: Boundary Function for Monitoring of Structural Changes
+URL: ../../../library/strucchange/html/boundary.mefp.html
+
+Entry: breakdates
+Aliases: breakdates breakdates.breakpoints breakdates.confint.breakpoints
+Keywords: regression
+Description: Breakdates Corresponding to Breakpoints
+URL: ../../../library/strucchange/html/breakdates.html
+
+Entry: breakfactor
+Aliases: breakfactor
+Keywords: regression
+Description: Factor Coding of Segmentations
+URL: ../../../library/strucchange/html/breakfactor.html
+
+Entry: breakpoints
+Aliases: breakpoints breakpoints.formula breakpoints.breakpointsfull breakpoints.Fstats summary.breakpoints summary.breakpointsfull plot.breakpointsfull plot.summary.breakpointsfull print.breakpoints print.summary.breakpointsfull lines.breakpoints
+Keywords: regression
+Description: Dating Breaks
+URL: ../../../library/strucchange/html/breakpoints.html
+
+Entry: confint.breakpointsfull
+Aliases: confint.breakpointsfull lines.confint.breakpoints print.confint.breakpoints
+Keywords: regression
+Description: Confidence Intervals for Breakpoints
+URL: ../../../library/strucchange/html/confint.breakpointsfull.html
+
+Entry: covHC
+Aliases: covHC
+Keywords: htest
+Description: Heteroskedasticity-Consistent Covariance Matrix Estimation
+URL: ../../../library/strucchange/html/covHC.html
+
+Entry: durab
+Aliases: durab
+Keywords: datasets
+Description: US Labor Productivity
+URL: ../../../library/strucchange/html/durab.html
+
+Entry: efp
+Aliases: efp print.efp
+Keywords: regression
+Description: Empirical Fluctuation Processes
+URL: ../../../library/strucchange/html/efp.html
+
+Entry: logLik.breakpoints
+Aliases: logLik.breakpoints logLik.breakpointsfull AIC.breakpointsfull
+Keywords: regression
+Description: Log Likelihood and Information Criteria for Breakpoints
+URL: ../../../library/strucchange/html/logLik.breakpoints.html
+
+Entry: mefp
+Aliases: mefp mefp.formula mefp.efp print.mefp monitor
+Keywords: regression
+Description: Monitoring of Empirical Fluctuation Processes
+URL: ../../../library/strucchange/html/mefp.html
+
+Entry: plot.Fstats
+Aliases: plot.Fstats lines.Fstats
+Keywords: hplot
+Description: Plot F Statistics
+URL: ../../../library/strucchange/html/plot.Fstats.html
+
+Entry: plot.efp
+Aliases: plot.efp lines.efp
+Keywords: hplot
+Description: Plot Empirical Fluctuation Process
+URL: ../../../library/strucchange/html/plot.efp.html
+
+Entry: plot.mefp
+Aliases: plot.mefp lines.mefp
+Keywords: hplot
+Description: Plot Methods for mefp Objects
+URL: ../../../library/strucchange/html/plot.mefp.html
+
+Entry: recresid
+Aliases: recresid recresid.default recresid.formula recresid.lm
+Keywords: regression
+Description: Recursive Residuals
+URL: ../../../library/strucchange/html/recresid.html
+
+Entry: root.matrix
+Aliases: root.matrix solve.crossprod solve.pd
+Keywords: algebra
+Description: Root of a Matrix
+URL: ../../../library/strucchange/html/root.matrix.html
+
+Entry: sctest.Fstats
+Aliases: sctest.Fstats
+Keywords: htest
+Description: supF-, aveF- and expF-Test
+URL: ../../../library/strucchange/html/sctest.Fstats.html
+
+Entry: sctest.formula
+Aliases: sctest sctest.formula
+Keywords: htest
+Description: Structural Change Tests
+URL: ../../../library/strucchange/html/sctest.html
+
+Entry: sctest.efp
+Aliases: sctest.efp
+Keywords: htest
+Description: Generalized Fluctuation Tests
+URL: ../../../library/strucchange/html/sctest.efp.html
+
+Entry: strucchange.internal
+Aliases: sc.beta.sup sc.beta.ave sc.beta.exp sc.me sc.meanL2 sc.maxL2 pvalue.efp pvalue.Fstats monitorMECritval monitorMECritvalData monitorMECritvalTable monitorRECritval monitorRECritvalData monitorRECritvalTable pargmaxV
+Keywords: internal
+Description: Internal strucchange objects
+URL: ../../../library/strucchange/html/strucchange.internal.html

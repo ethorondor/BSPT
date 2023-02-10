@@ -1,0 +1,162 @@
+<html><head><title>R: Plot Empirical Fluctuation Process</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for plot.efp {strucchange}"><tr><td>plot.efp {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Plot Empirical Fluctuation Process</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Plot and lines method for objects of class <code>"efp"</code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'efp':
+plot(x, alpha = 0.05, alt.boundary = FALSE, boundary = TRUE,
+    functional = "max", main = NULL,  ylim = NULL,
+    ylab = "empirical fluctuation process", ...)
+## S3 method for class 'efp':
+lines(x, functional = "max", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+an object of class <code>"efp"</code>.</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+numeric from interval (0,1) indicating the confidence level for
+which the boundary of the corresponding test will be computed.</td></tr>
+<tr valign="top"><td><code>alt.boundary</code></td>
+<td>
+logical. If set to <code>TRUE</code> alternative boundaries
+(instead of the standard linear boundaries) will be plotted (for CUSUM
+processes only).</td></tr>
+<tr valign="top"><td><code>boundary</code></td>
+<td>
+logical. If set to <code>FALSE</code> the boundary will be computed
+but not plotted.</td></tr>
+<tr valign="top"><td><code>functional</code></td>
+<td>
+indicates which functional should be applied to the
+process before plotting and which boundaries should be used. If set to <code>NULL</code>
+a multiple process with boundaries for the <code>"max"</code> functional is plotted.
+For more details see below.</td></tr>
+<tr valign="top"><td><code>main, ylim, ylab, ...</code></td>
+<td>
+high-level <code><a href="../../base/html/plot.html">plot</a></code> function
+parameters.</td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+Plots are available for the <code>"max"</code> functional for all process types.
+For Brownian bridge type processes the maximum or mean squared Euclidian norm
+(<code>"maxL2"</code> and <code>"meanL2"</code>) can be used for aggregating before plotting.
+No plots are available for the <code>"range"</code> functional.
+</p>
+<p>
+Alternative boundaries that are proportional to the standard deviation
+of the corresponding limiting process are available for processes with Brownian
+motion or Brownian bridge limiting processes.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+<code><a href="efp.html">efp</a></code> returns an object of class <code>"efp"</code> which inherits
+from the class <code>"ts"</code> or <code>"mts"</code> respectively. The function
+<code><a href="../../base/html/plot.html">plot</a></code> has a method to plot the
+empirical fluctuation process; with <code>sctest</code> the corresponding test for
+structural change can be performed.</p>
+
+<h3>References</h3>
+
+<p>
+Brown R.L., Durbin J., Evans J.M. (1975), Techniques for
+testing constancy of regression relationships over time, <EM>Journal of the
+Royal Statistal Society</EM>, B, <B>37</B>, 149-163.
+</p>
+<p>
+Chu C.-S., Hornik K., Kuan C.-M. (1995), MOSUM tests for parameter
+constancy, <EM>Biometrika</EM>, <B>82</B>, 603-617.
+</p>
+<p>
+Chu C.-S., Hornik K., Kuan C.-M. (1995), The moving-estimates test for
+parameter stability, <EM>Econometric Theory</EM>, <B>11</B>, 669-720.
+</p>
+<p>
+Krämer W., Ploberger W., Alt R. (1988), Testing for structural change in
+dynamic models, <EM>Econometrica</EM>, <B>56</B>, 1355-1369.
+</p>
+<p>
+Kuan C.-M., Hornik K. (1995), The generalized fluctuation test: A
+unifying view, <EM>Econometric Reviews</EM>, <B>14</B>, 135 - 161.
+</p>
+<p>
+Kuan C.-M., Chen (1994), Implementing the fluctuation and moving estimates
+tests in dynamic econometric models, <EM>Economics Letters</EM>, <B>44</B>,
+235-239.
+</p>
+<p>
+Ploberger W., Krämer W. (1992), The CUSUM test with OLS residuals,
+<EM>Econometrica</EM>, <B>60</B>, 271-285.
+</p>
+<p>
+Zeileis A. (2000), p Values and Alternative Boundaries for CUSUM Tests,
+Working Paper 78, SFB "Adaptive Information Systems and Modelling in Economics
+and Management Science", Vienna University of Economics,
+<a href="http://www.wu-wien.ac.at/am/wp00.htm#78">http://www.wu-wien.ac.at/am/wp00.htm#78</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="efp.html">efp</a></code>, <code><a href="boundary.efp.html">boundary.efp</a></code>,
+<code><a href="sctest.efp.html">sctest.efp</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Load dataset "nhtemp" with average yearly temperatures in New Haven
+data(nhtemp)
+## plot the data
+plot(nhtemp)
+
+## test the model null hypothesis that the average temperature remains
+## constant over the years
+## compute Rec-CUSUM fluctuation process
+temp.cus &lt;- efp(nhtemp ~ 1)
+## plot the process
+plot(temp.cus, alpha = 0.01)
+## and calculate the test statistic
+sctest(temp.cus)
+
+## compute (recursive estimates) fluctuation process
+## with an additional linear trend regressor
+lin.trend &lt;- 1:60
+temp.me &lt;- efp(nhtemp ~ lin.trend, type = "fluctuation")
+## plot the bivariate process
+plot(temp.me, functional = NULL)
+## and perform the corresponding test
+sctest(temp.me)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

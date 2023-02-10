@@ -1,0 +1,61 @@
+boundary.Fstats         package:strucchange         R Documentation
+
+_B_o_u_n_d_a_r_y _f_o_r _F _S_t_a_t_i_s_t_i_c_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Computes boundary for an object of class '"Fstats"'
+
+_U_s_a_g_e:
+
+     ## S3 method for class 'Fstats':
+     boundary(x, alpha = 0.05, pval = FALSE, aveF = FALSE,
+         asymptotic = FALSE, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       x: an object of class '"Fstats"'.
+
+   alpha: numeric from interval (0,1) indicating the confidence level
+          for which the boundary of the supF test will be computed.
+
+    pval: logical. If set to 'TRUE' a boundary for the corresponding p
+          values will be computed.
+
+    aveF: logical. If set to 'TRUE' the boundary of the aveF (instead
+          of the supF) test will be computed. The resulting boundary
+          then is a boundary for the mean of the F statistics rather
+          than for the F statistics themselves.
+
+asymptotic: logical. If set to 'TRUE' the asymptotic (chi-square)
+          distribution instead of the exact (F) distribution will be
+          used to compute the p values (only if 'pval' is 'TRUE').
+
+     ...: currently not used.
+
+_V_a_l_u_e:
+
+     an object of class '"ts"' with the same time properties as the
+     time series in 'x'
+
+_S_e_e _A_l_s_o:
+
+     'Fstats', 'plot.Fstats'
+
+_E_x_a_m_p_l_e_s:
+
+     ## Load dataset "nhtemp" with average yearly temperatures in New Haven
+     data(nhtemp)
+     ## plot the data
+     plot(nhtemp)
+
+     ## test the model null hypothesis that the average temperature remains
+     ## constant over the years for potential break points between 1941
+     ## (corresponds to from = 0.5) and 1962 (corresponds to to = 0.85)
+     ## compute F statistics
+     fs <- Fstats(nhtemp ~ 1, from = 0.5, to = 0.85)
+     ## plot the p values without boundary
+     plot(fs, pval = TRUE, alpha = 0.01)
+     ## add the boundary in another colour
+     lines(boundary(fs, pval = TRUE, alpha = 0.01), col = 2)
+

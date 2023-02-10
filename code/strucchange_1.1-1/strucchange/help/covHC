@@ -1,0 +1,66 @@
+covHC              package:strucchange              R Documentation
+
+_H_e_t_e_r_o_s_k_e_d_a_s_t_i_c_i_t_y-_C_o_n_s_i_s_t_e_n_t _C_o_v_a_r_i_a_n_c_e _M_a_t_r_i_x _E_s_t_i_m_a_t_i_o_n
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Heteroskedasticity-consistent estimation of the covariance matrix
+     of the coefficient estimates in a linear regression model.
+
+_U_s_a_g_e:
+
+     covHC(formula, type = c("HC2", "const", "HC", "HC1", "HC3"),
+        data=list())
+
+_A_r_g_u_m_e_n_t_s:
+
+ formula: a symbolic description for the model to be fitted.
+
+    type: a character string specifying the estimation type. For
+          details see below.
+
+    data: an optional data frame containing the variables in the model.
+          By default the variables are taken from the environment which
+          'covHC' is called from.
+
+_D_e_t_a_i_l_s:
+
+     When 'type = "const"' constant variances are assumed and and
+     'covHC' gives the usual estimate of the covariance matrix of the
+     coefficient estimates:
+
+
+                          sigma^2 (X'X)^{-1}
+
+
+     All other methods do not assume constant variances and are
+     suitable in case of heteroskedasticity. '"HC"' gives White's
+     estimator; for details see the references.
+
+_V_a_l_u_e:
+
+     A matrix containing the covariance matrix estimate.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     MacKinnon J. G., White H. (1985), Some
+     heteroskedasticity-consistent covariance matrix estimators with
+     improved finite sample properties. _Journal of Econometrics_ *29*,
+     305-325
+
+_S_e_e _A_l_s_o:
+
+     'lm'
+
+_E_x_a_m_p_l_e_s:
+
+     ## generate linear regression relationship
+     ## with homoskedastic variances
+     x <- sin(1:100)
+     y <- 1 + x + rnorm(100)
+     ## compute usual covariance matrix of coefficient estimates
+     covHC(y~x, type="const")
+
+     sigma2 <- sum(residuals(lm(y~x))^2)/98
+     sigma2 * solve.crossprod(cbind(1,x))
+

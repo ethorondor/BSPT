@@ -1,0 +1,29 @@
+\Header{root.matrix}{Root of a Matrix}
+\alias{solve.crossprod}{root.matrix}
+\alias{solve.pd}{root.matrix}
+\keyword{algebra}{root.matrix}
+\begin{Description}\relax
+Computes the root of a symmetric and positive semidefinite matrix.\end{Description}
+\begin{Usage}
+\begin{verbatim}
+root.matrix(X)
+solve.pd(X)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{X}] a symmetric and positive semidefinite matrix
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+a symmetric matrix of same dimensions as \code{X}\end{Value}
+\begin{Examples}
+\begin{ExampleCode}
+X <- matrix(c(1,2,2,8), ncol=2)
+test <- root.matrix(X)
+## control results
+X
+test %*% test
+\end{ExampleCode}
+\end{Examples}
+

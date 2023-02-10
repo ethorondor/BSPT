@@ -1,0 +1,90 @@
+<html><head><title>R: Boundary for F Statistics</title>
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for boundary.Fstats {strucchange}"><tr><td>boundary.Fstats {strucchange}</td><td align="right">R Documentation</td></tr></table>
+<h2>Boundary for F Statistics</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Computes boundary for an object of class <code>"Fstats"</code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'Fstats':
+boundary(x, alpha = 0.05, pval = FALSE, aveF = FALSE,
+    asymptotic = FALSE, ...)</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+an object of class <code>"Fstats"</code>.</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+numeric from interval (0,1) indicating the confidence level for
+which the boundary of the supF test will be computed.</td></tr>
+<tr valign="top"><td><code>pval</code></td>
+<td>
+logical. If set to <code>TRUE</code> a boundary for the corresponding p
+values will be computed.</td></tr>
+<tr valign="top"><td><code>aveF</code></td>
+<td>
+logical. If set to <code>TRUE</code> the boundary of the aveF (instead of
+the supF) test will be computed. The resulting boundary then is a boundary
+for the mean of the F statistics rather than for the F statistics
+themselves.</td></tr>
+<tr valign="top"><td><code>asymptotic</code></td>
+<td>
+logical. If set to <code>TRUE</code> the asymptotic (chi-square)
+distribution instead of the exact (F) distribution will be used to compute
+the p values (only if <code>pval</code> is <code>TRUE</code>).</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+currently not used.</td></tr>
+</table>
+
+<h3>Value</h3>
+
+<p>
+an object of class <code>"ts"</code> with the same time properties as
+the time series in <code>x</code></p>
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="Fstats.html">Fstats</a></code>, <code><a href="plot.Fstats.html">plot.Fstats</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Load dataset "nhtemp" with average yearly temperatures in New Haven
+data(nhtemp)
+## plot the data
+plot(nhtemp)
+
+## test the model null hypothesis that the average temperature remains
+## constant over the years for potential break points between 1941
+## (corresponds to from = 0.5) and 1962 (corresponds to to = 0.85)
+## compute F statistics
+fs &lt;- Fstats(nhtemp ~ 1, from = 0.5, to = 0.85)
+## plot the p values without boundary
+plot(fs, pval = TRUE, alpha = 0.01)
+## add the boundary in another colour
+lines(boundary(fs, pval = TRUE, alpha = 0.01), col = 2)
+</pre>
+
+
+
+<hr><div align="center"><a href="00Index.html">[Package Contents]</a></div>
+
+</body></html>

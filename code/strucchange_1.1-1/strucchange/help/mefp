@@ -1,0 +1,158 @@
+mefp               package:strucchange               R Documentation
+
+_M_o_n_i_t_o_r_i_n_g _o_f _E_m_p_i_r_i_c_a_l _F_l_u_c_t_u_a_t_i_o_n _P_r_o_c_e_s_s_e_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Online monitoring of structural breaks in a linear regression
+     model. A sequential fluctuation test based on parameter estimates
+     or OLS residualas signals structural breaks.
+
+_U_s_a_g_e:
+
+     mefp(obj, ...)
+
+     ## S3 method for class 'formula':
+     mefp(formula, type = c("OLS-CUSUM", "OLS-MOSUM", "RE", "ME",
+         "fluctuation"), data, h = 1, alpha = 0.05,
+         functional = c("max", "range"), period = 10,
+         tolerance = .Machine$double.eps^0.5, CritvalTable = NULL,
+         rescale = NULL, border = NULL, ...)
+
+     ## S3 method for class 'efp':
+     mefp(obj, alpha=0.05, functional = c("max", "range"),
+         period = 10, tolerance = .Machine$double.eps^0.5,
+         CritvalTable = NULL, rescale = NULL, border = NULL, ...)
+
+     monitor(obj, data = NULL, verbose = TRUE)
+
+_A_r_g_u_m_e_n_t_s:
+
+ formula: a symbolic description for the model to be tested.
+
+    data: an optional data frame containing the variables in the model.
+          By default the variables are taken from the environment which
+          'efp' is called from.
+
+    type: specifies which type of fluctuation process will be computed.
+
+       h: (only used for MOSUM/ME processes). A numeric scalar from
+          interval (0,1) specifying the size of the data window
+          relative to the sample size.
+
+     obj: Object of class '"efp"' (for 'mefp') or '"mefp"' (for
+          'monitor').
+
+   alpha: Significance level of the test, i.e., probability of type I
+          error.
+
+functional: Determines if maximum or range of parameter differences is
+          used as statistic.
+
+  period: (only used for MOSUM/ME processes). Maximum time (relative to
+          the history period) that will be monitored. Default is 10
+          times the history period.
+
+tolerance: Tolerance for numeric '==' comparisons.
+
+CritvalTable: Table of critical values, this table is interpolated to
+          get critical values for arbitrary 'alpha's. The default
+          depends on the 'type' of fluctuation process (pre-computed
+          tables are available for all types). _This argument is under
+          development._
+
+ rescale: If 'TRUE' the estimates will be standardized by the regressor
+          matrix of the corresponding subsample similar to Kuan & Chen
+          (1994); if 'FALSE' the historic regressor matrix will be
+          used. The default is to rescale the monitoring processes of
+          type '"ME"' but not of '"RE"'.
+
+  border: An optional user-specified border function for the empirical
+          process. _This argument is under development._
+
+ verbose: If 'TRUE', signal breaks by text output.
+
+     ...: Currently not used.
+
+_D_e_t_a_i_l_s:
+
+     'mefp' creates an object of class '"mefp"' either from a model
+     formula or from an object of class '"efp"'. In addition to the
+     arguments of 'efp', the type of statistic and a significance level
+     for the monitoring must be specified. The monitoring itself is
+     performed by 'monitor', which can be called arbitrarily often on
+     objects of class '"mefp"'. If new data have arrived, then the
+     empirical fluctuation process is computed for the new data. If the
+     process crosses the boundaries corresponding to the significance
+     level 'alpha', a structural break is detected (and signaled).
+
+     The typical usage is to initialize the monitoring by creation of
+     an object of class '"mefp"' either using a formula or an '"efp"'
+     object. Data available at this stage are considered the _history
+     sample_, which is kept fixed during the complete monitoring
+     process, and may not contain any structural changes.
+
+     Subsequent calls to 'monitor' perform a sequential test of the
+     null hypothesis of no structural change in new data against the
+     general alternative of changes in one or more of the coefficients
+     of the regression model.
+
+     The recursive estimates test is also called fluctuation test,
+     therefore setting 'type' to '"fluctuation"' was used to specify it
+     in earlier versions of strucchange. It still can be used now, but
+     will be forced to '"RE"'
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Leisch F., Hornik K., Kuan C.-M. (2000), Monitoring Structural
+     Changes with the Generalized Fluctuation Test, _Econometric
+     Theory_, *16*, 835-854.
+
+     Zeileis A., Leisch F., Kleiber C., Hornik K. (2003), Monitoring
+     Structural Change in Dynamic Econometric Models, Report 64, SFB
+     "Adaptive Information Systems and Modelling in Economics and
+     Management Science", Vienna University of Economics, <URL:
+     http://www.wu-wien.ac.at/am/reports.htm#64>.
+
+_S_e_e _A_l_s_o:
+
+     'plot.mefp', 'boundary.mefp'
+
+_E_x_a_m_p_l_e_s:
+
+     df1 <- data.frame(y=rnorm(300))
+     df1[150:300,"y"] <- df1[150:300,"y"]+1
+
+     ## use the first 50 observations as history period
+     e1 <- efp(y~1, data=df1[1:50,,drop=FALSE], type="ME", h=1)
+     me1 <- mefp(e1, alpha=0.05)
+
+     ## the same in one function call
+     me1 <- mefp(y~1, data=df1[1:50,,drop=FALSE], type="ME", h=1,
+                   alpha=0.05)
+
+     ## monitor the 50 next observations
+     me2 <- monitor(me1, data=df1[1:100,,drop=FALSE])
+     plot(me2)
+
+     # and now monitor on all data
+     me3 <- monitor(me2, data=df1)
+     plot(me3)
+
+     ## Load dataset "USIncExp" with income and expenditure in the US
+     ## and choose a suitable subset for the history period
+     data(USIncExp)
+     USIncExp3 <- window(USIncExp, start=c(1969,1), end=c(1971,12))
+     ## initialize the monitoring with the formula interface
+     me.mefp <- mefp(expenditure~income, type="ME", rescale=TRUE,
+                        data=USIncExp3, alpha=0.05)
+
+     ## monitor the new observations for the year 1972
+     USIncExp3 <- window(USIncExp, start=c(1969,1), end=c(1972,12))
+     me.mefp <- monitor(me.mefp)
+
+     ## monitor the new data for the years 1973-1976
+     USIncExp3 <- window(USIncExp, start=c(1969,1), end=c(1976,12))
+     me.mefp <- monitor(me.mefp)
+     plot(me.mefp, functional = NULL)
+

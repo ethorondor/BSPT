@@ -1,0 +1,41 @@
+\Header{plot.mefp}{Plot Methods for mefp Objects}
+\alias{lines.mefp}{plot.mefp}
+\keyword{hplot}{plot.mefp}
+\begin{Description}\relax
+This is a method of the generic \code{\Link{plot}} function for
+for \code{"mefp"} objects as returned by \code{\Link{mefp}} or
+\code{\Link{monitor}}. It plots the emprical fluctuation process (or a
+functional therof) as a time series plot, and includes boundaries
+corresponding to the significance level of the monitoring procedure.\end{Description}
+\begin{Usage}
+\begin{verbatim}
+## S3 method for class 'mefp':
+plot(x, boundary = TRUE, functional = "max", main = NULL,
+    ylab = "empirical fluctuation process", ylim = NULL, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{x}] an object of class \code{"mefp"}.
+\item[\code{boundary}] if \code{FALSE}, plotting of boundaries is suppressed.
+\item[\code{functional}] indicates which functional should be applied to a
+multivariate empirical process. If set to \code{NULL} all dimensions
+of the process (one process per coefficient in the linear model) are
+plotted. 
+\item[\code{main, ylab, ylim, ...}] high-level \code{\Link{plot}} function parameters.
+\end{ldescription}
+\end{Arguments}
+\begin{SeeAlso}\relax
+\code{\Link{mefp}}\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+df1 <- data.frame(y=rnorm(300))
+df1[150:300,"y"] <- df1[150:300,"y"]+1
+me1 <- mefp(y~1, data=df1[1:50,,drop=FALSE], type="ME", h=1,
+              alpha=0.05)
+me2 <- monitor(me1, data=df1)
+
+plot(me2)
+\end{ExampleCode}
+\end{Examples}
+
